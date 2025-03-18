@@ -6,6 +6,36 @@
 #include "calculadora.h"
 
 bool_t
+xdr_matriz (XDR *xdrs, matriz *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_int (xdrs, &objp->filas))
+		 return FALSE;
+	 if (!xdr_int (xdrs, &objp->columnas))
+		 return FALSE;
+	 if (!xdr_array (xdrs, (char **)&objp->valores.valores_val, (u_int *) &objp->valores.valores_len, 100,
+		sizeof (double), (xdrproc_t) xdr_double))
+		 return FALSE;
+	return TRUE;
+}
+
+bool_t
+xdr_resultado_matriz (XDR *xdrs, resultado_matriz *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_int (xdrs, &objp->filas))
+		 return FALSE;
+	 if (!xdr_int (xdrs, &objp->columnas))
+		 return FALSE;
+	 if (!xdr_array (xdrs, (char **)&objp->valores.valores_val, (u_int *) &objp->valores.valores_len, 100,
+		sizeof (double), (xdrproc_t) xdr_double))
+		 return FALSE;
+	return TRUE;
+}
+
+bool_t
 xdr_operandos (XDR *xdrs, operandos *objp)
 {
 	register int32_t *buf;
@@ -13,6 +43,18 @@ xdr_operandos (XDR *xdrs, operandos *objp)
 	 if (!xdr_double (xdrs, &objp->a))
 		 return FALSE;
 	 if (!xdr_double (xdrs, &objp->b))
+		 return FALSE;
+	return TRUE;
+}
+
+bool_t
+xdr_matrices (XDR *xdrs, matrices *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_matriz (xdrs, &objp->A))
+		 return FALSE;
+	 if (!xdr_matriz (xdrs, &objp->B))
 		 return FALSE;
 	return TRUE;
 }

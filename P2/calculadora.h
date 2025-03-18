@@ -14,11 +14,37 @@ extern "C" {
 #endif
 
 
+struct matriz {
+	int filas;
+	int columnas;
+	struct {
+		u_int valores_len;
+		double *valores_val;
+	} valores;
+};
+typedef struct matriz matriz;
+
+struct resultado_matriz {
+	int filas;
+	int columnas;
+	struct {
+		u_int valores_len;
+		double *valores_val;
+	} valores;
+};
+typedef struct resultado_matriz resultado_matriz;
+
 struct operandos {
 	double a;
 	double b;
 };
 typedef struct operandos operandos;
+
+struct matrices {
+	matriz A;
+	matriz B;
+};
+typedef struct matrices matrices;
 
 #define CALC_PROG 0x20000001
 #define CALC_VER 1
@@ -36,6 +62,9 @@ extern  double * multiplicacion_1_svc(operandos , struct svc_req *);
 #define division 4
 extern  double * division_1(operandos , CLIENT *);
 extern  double * division_1_svc(operandos , struct svc_req *);
+#define multiplicar_matrices 5
+extern  resultado_matriz * multiplicar_matrices_1(matrices , CLIENT *);
+extern  resultado_matriz * multiplicar_matrices_1_svc(matrices , struct svc_req *);
 extern int calc_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -51,16 +80,25 @@ extern  double * multiplicacion_1_svc();
 #define division 4
 extern  double * division_1();
 extern  double * division_1_svc();
+#define multiplicar_matrices 5
+extern  resultado_matriz * multiplicar_matrices_1();
+extern  resultado_matriz * multiplicar_matrices_1_svc();
 extern int calc_prog_1_freeresult ();
 #endif /* K&R C */
 
 /* the xdr functions */
 
 #if defined(__STDC__) || defined(__cplusplus)
+extern  bool_t xdr_matriz (XDR *, matriz*);
+extern  bool_t xdr_resultado_matriz (XDR *, resultado_matriz*);
 extern  bool_t xdr_operandos (XDR *, operandos*);
+extern  bool_t xdr_matrices (XDR *, matrices*);
 
 #else /* K&R C */
+extern bool_t xdr_matriz ();
+extern bool_t xdr_resultado_matriz ();
 extern bool_t xdr_operandos ();
+extern bool_t xdr_matrices ();
 
 #endif /* K&R C */
 

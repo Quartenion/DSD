@@ -68,3 +68,18 @@ division_1(operandos arg1,  CLIENT *clnt)
 	}
 	return (&clnt_res);
 }
+
+resultado_matriz *
+multiplicar_matrices_1(matrices arg1,  CLIENT *clnt)
+{
+	static resultado_matriz clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, multiplicar_matrices,
+		(xdrproc_t) xdr_matrices, (caddr_t) &arg1,
+		(xdrproc_t) xdr_resultado_matriz, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}

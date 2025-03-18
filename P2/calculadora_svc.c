@@ -40,6 +40,12 @@ _division_1 (operandos  *argp, struct svc_req *rqstp)
 	return (division_1_svc(*argp, rqstp));
 }
 
+static resultado_matriz *
+_multiplicar_matrices_1 (matrices  *argp, struct svc_req *rqstp)
+{
+	return (multiplicar_matrices_1_svc(*argp, rqstp));
+}
+
 static void
 calc_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
@@ -48,6 +54,7 @@ calc_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		operandos resta_1_arg;
 		operandos multiplicacion_1_arg;
 		operandos division_1_arg;
+		matrices multiplicar_matrices_1_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -80,6 +87,12 @@ calc_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		_xdr_argument = (xdrproc_t) xdr_operandos;
 		_xdr_result = (xdrproc_t) xdr_double;
 		local = (char *(*)(char *, struct svc_req *)) _division_1;
+		break;
+
+	case multiplicar_matrices:
+		_xdr_argument = (xdrproc_t) xdr_matrices;
+		_xdr_result = (xdrproc_t) xdr_resultado_matriz;
+		local = (char *(*)(char *, struct svc_req *)) _multiplicar_matrices_1;
 		break;
 
 	default:

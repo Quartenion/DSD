@@ -114,6 +114,21 @@ raiz_1(operandos arg1,  CLIENT *clnt)
 	return (&clnt_res);
 }
 
+double *
+operacion_compuesta_1(expresion arg1,  CLIENT *clnt)
+{
+	static double clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, operacion_compuesta,
+		(xdrproc_t) xdr_expresion, (caddr_t) &arg1,
+		(xdrproc_t) xdr_double, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
 resultado_matriz *
 multiplicar_matrices_1(matrices arg1,  CLIENT *clnt)
 {

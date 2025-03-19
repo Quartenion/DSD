@@ -58,3 +58,13 @@ xdr_matrices (XDR *xdrs, matrices *objp)
 		 return FALSE;
 	return TRUE;
 }
+
+bool_t
+xdr_expresion (XDR *xdrs, expresion *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_string (xdrs, &objp->operacion, 100))
+		 return FALSE;
+	return TRUE;
+}

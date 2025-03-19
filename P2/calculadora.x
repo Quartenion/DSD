@@ -23,6 +23,10 @@ struct matrices {
     matriz B;
 };
 
+struct expresion {
+    string operacion<100>;
+};
+
 program CALC_PROG {
     version CALC_VER {
         /* Operaciones aritméticas básicas */
@@ -33,10 +37,11 @@ program CALC_PROG {
         double modulo(operandos) = 5;        
         double potencia(operandos) = 6;
         double raiz(operandos) = 7;
+        double operacion_compuesta(expresion) = 8;
         
         /* Operaciones con matrices */
-        resultado_matriz multiplicar_matrices(matrices) = 8;
-        resultado_matriz suma_matrices(matrices) = 9;
-        resultado_matriz resta_matrices(matrices) = 10;
+        resultado_matriz multiplicar_matrices(matrices) = 9;
+        resultado_matriz suma_matrices(matrices) = 10;
+        resultado_matriz resta_matrices(matrices) = 11;
     } = 1;
 } = 0x20000001;

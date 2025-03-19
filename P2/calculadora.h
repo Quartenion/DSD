@@ -46,6 +46,11 @@ struct matrices {
 };
 typedef struct matrices matrices;
 
+struct expresion {
+	char *operacion;
+};
+typedef struct expresion expresion;
+
 #define CALC_PROG 0x20000001
 #define CALC_VER 1
 
@@ -71,13 +76,16 @@ extern  double * potencia_1_svc(operandos , struct svc_req *);
 #define raiz 7
 extern  double * raiz_1(operandos , CLIENT *);
 extern  double * raiz_1_svc(operandos , struct svc_req *);
-#define multiplicar_matrices 8
+#define operacion_compuesta 8
+extern  double * operacion_compuesta_1(expresion , CLIENT *);
+extern  double * operacion_compuesta_1_svc(expresion , struct svc_req *);
+#define multiplicar_matrices 9
 extern  resultado_matriz * multiplicar_matrices_1(matrices , CLIENT *);
 extern  resultado_matriz * multiplicar_matrices_1_svc(matrices , struct svc_req *);
-#define suma_matrices 9
+#define suma_matrices 10
 extern  resultado_matriz * suma_matrices_1(matrices , CLIENT *);
 extern  resultado_matriz * suma_matrices_1_svc(matrices , struct svc_req *);
-#define resta_matrices 10
+#define resta_matrices 11
 extern  resultado_matriz * resta_matrices_1(matrices , CLIENT *);
 extern  resultado_matriz * resta_matrices_1_svc(matrices , struct svc_req *);
 extern int calc_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
@@ -104,13 +112,16 @@ extern  double * potencia_1_svc();
 #define raiz 7
 extern  double * raiz_1();
 extern  double * raiz_1_svc();
-#define multiplicar_matrices 8
+#define operacion_compuesta 8
+extern  double * operacion_compuesta_1();
+extern  double * operacion_compuesta_1_svc();
+#define multiplicar_matrices 9
 extern  resultado_matriz * multiplicar_matrices_1();
 extern  resultado_matriz * multiplicar_matrices_1_svc();
-#define suma_matrices 9
+#define suma_matrices 10
 extern  resultado_matriz * suma_matrices_1();
 extern  resultado_matriz * suma_matrices_1_svc();
-#define resta_matrices 10
+#define resta_matrices 11
 extern  resultado_matriz * resta_matrices_1();
 extern  resultado_matriz * resta_matrices_1_svc();
 extern int calc_prog_1_freeresult ();
@@ -123,12 +134,14 @@ extern  bool_t xdr_matriz (XDR *, matriz*);
 extern  bool_t xdr_resultado_matriz (XDR *, resultado_matriz*);
 extern  bool_t xdr_operandos (XDR *, operandos*);
 extern  bool_t xdr_matrices (XDR *, matrices*);
+extern  bool_t xdr_expresion (XDR *, expresion*);
 
 #else /* K&R C */
 extern bool_t xdr_matriz ();
 extern bool_t xdr_resultado_matriz ();
 extern bool_t xdr_operandos ();
 extern bool_t xdr_matrices ();
+extern bool_t xdr_expresion ();
 
 #endif /* K&R C */
 

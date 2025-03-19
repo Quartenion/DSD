@@ -58,6 +58,12 @@ _raiz_1 (operandos  *argp, struct svc_req *rqstp)
 	return (raiz_1_svc(*argp, rqstp));
 }
 
+static double *
+_operacion_compuesta_1 (expresion  *argp, struct svc_req *rqstp)
+{
+	return (operacion_compuesta_1_svc(*argp, rqstp));
+}
+
 static resultado_matriz *
 _multiplicar_matrices_1 (matrices  *argp, struct svc_req *rqstp)
 {
@@ -87,6 +93,7 @@ calc_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		operandos modulo_1_arg;
 		operandos potencia_1_arg;
 		operandos raiz_1_arg;
+		expresion operacion_compuesta_1_arg;
 		matrices multiplicar_matrices_1_arg;
 		matrices suma_matrices_1_arg;
 		matrices resta_matrices_1_arg;
@@ -140,6 +147,12 @@ calc_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		_xdr_argument = (xdrproc_t) xdr_operandos;
 		_xdr_result = (xdrproc_t) xdr_double;
 		local = (char *(*)(char *, struct svc_req *)) _raiz_1;
+		break;
+
+	case operacion_compuesta:
+		_xdr_argument = (xdrproc_t) xdr_expresion;
+		_xdr_result = (xdrproc_t) xdr_double;
+		local = (char *(*)(char *, struct svc_req *)) _operacion_compuesta_1;
 		break;
 
 	case multiplicar_matrices:

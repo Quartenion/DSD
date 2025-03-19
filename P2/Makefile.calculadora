@@ -11,13 +11,12 @@ SOURCES_SVC.c =
 SOURCES_SVC.h = 
 SOURCES.x = calculadora.x
 
-TARGETS_CLNT.c = calculadora_clnt.c calculadora_client.c calculadora_xdr.c matriz_calculadora_clnt.c matriz_calculadora_xdr.c
-TARGETS_SVC.c = calculadora_svc.c calculadora_server.c calculadora_xdr.c matriz_calculadora_xdr.c matriz_calculadora_server.c matriz_calculadora_clnt.c
+TARGETS_SVC.c = calculadora_svc.c calculadora_server.c calculadora_xdr.c 
+TARGETS_CLNT.c = calculadora_clnt.c calculadora_client.c calculadora_xdr.c 
 TARGETS = calculadora.h calculadora_xdr.c calculadora_clnt.c calculadora_svc.c calculadora_client.c calculadora_server.c
 
 OBJECTS_CLNT = $(SOURCES_CLNT.c:%.c=%.o) $(TARGETS_CLNT.c:%.c=%.o)
 OBJECTS_SVC = $(SOURCES_SVC.c:%.c=%.o) $(TARGETS_SVC.c:%.c=%.o)
-
 # Compiler flags 
 
 CFLAGS += -g -I/usr/include/tirpc 
@@ -41,5 +40,6 @@ $(CLIENT) : $(OBJECTS_CLNT)
 $(SERVER) : $(OBJECTS_SVC) 
 	$(LINK.c) -o $(SERVER) $(OBJECTS_SVC) $(LDLIBS)
 
-clean:
-	$(RM) core $(TARGETS) $(OBJECTS_CLNT) $(OBJECTS_SVC) $(CLIENT) $(SERVER)
+ clean:
+	 $(RM) core $(TARGETS) $(OBJECTS_CLNT) $(OBJECTS_SVC) $(CLIENT) $(SERVER)
+

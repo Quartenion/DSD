@@ -40,10 +40,64 @@ _division_1 (operandos  *argp, struct svc_req *rqstp)
 	return (division_1_svc(*argp, rqstp));
 }
 
+static double *
+_modulo_1 (operandos  *argp, struct svc_req *rqstp)
+{
+	return (modulo_1_svc(*argp, rqstp));
+}
+
+static double *
+_potencia_1 (operandos  *argp, struct svc_req *rqstp)
+{
+	return (potencia_1_svc(*argp, rqstp));
+}
+
+static double *
+_raiz_1 (double  *argp, struct svc_req *rqstp)
+{
+	return (raiz_1_svc(*argp, rqstp));
+}
+
 static resultado_matriz *
 _multiplicar_matrices_1 (matrices  *argp, struct svc_req *rqstp)
 {
 	return (multiplicar_matrices_1_svc(*argp, rqstp));
+}
+
+static resultado_matriz *
+_suma_matrices_1 (matrices  *argp, struct svc_req *rqstp)
+{
+	return (suma_matrices_1_svc(*argp, rqstp));
+}
+
+static resultado_matriz *
+_resta_matrices_1 (matrices  *argp, struct svc_req *rqstp)
+{
+	return (resta_matrices_1_svc(*argp, rqstp));
+}
+
+static resultado_matriz *
+_transpuesta_matriz_1 (matriz  *argp, struct svc_req *rqstp)
+{
+	return (transpuesta_matriz_1_svc(*argp, rqstp));
+}
+
+static double *
+_area_triangulo_1 (figura  *argp, struct svc_req *rqstp)
+{
+	return (area_triangulo_1_svc(*argp, rqstp));
+}
+
+static double *
+_area_circulo_1 (double  *argp, struct svc_req *rqstp)
+{
+	return (area_circulo_1_svc(*argp, rqstp));
+}
+
+static double *
+_area_trapecio_1 (figura  *argp, struct svc_req *rqstp)
+{
+	return (area_trapecio_1_svc(*argp, rqstp));
 }
 
 static void
@@ -54,7 +108,16 @@ calc_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		operandos resta_1_arg;
 		operandos multiplicacion_1_arg;
 		operandos division_1_arg;
+		operandos modulo_1_arg;
+		operandos potencia_1_arg;
+		double raiz_1_arg;
 		matrices multiplicar_matrices_1_arg;
+		matrices suma_matrices_1_arg;
+		matrices resta_matrices_1_arg;
+		matriz transpuesta_matriz_1_arg;
+		figura area_triangulo_1_arg;
+		double area_circulo_1_arg;
+		figura area_trapecio_1_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -89,10 +152,64 @@ calc_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		local = (char *(*)(char *, struct svc_req *)) _division_1;
 		break;
 
+	case modulo:
+		_xdr_argument = (xdrproc_t) xdr_operandos;
+		_xdr_result = (xdrproc_t) xdr_double;
+		local = (char *(*)(char *, struct svc_req *)) _modulo_1;
+		break;
+
+	case potencia:
+		_xdr_argument = (xdrproc_t) xdr_operandos;
+		_xdr_result = (xdrproc_t) xdr_double;
+		local = (char *(*)(char *, struct svc_req *)) _potencia_1;
+		break;
+
+	case raiz:
+		_xdr_argument = (xdrproc_t) xdr_double;
+		_xdr_result = (xdrproc_t) xdr_double;
+		local = (char *(*)(char *, struct svc_req *)) _raiz_1;
+		break;
+
 	case multiplicar_matrices:
 		_xdr_argument = (xdrproc_t) xdr_matrices;
 		_xdr_result = (xdrproc_t) xdr_resultado_matriz;
 		local = (char *(*)(char *, struct svc_req *)) _multiplicar_matrices_1;
+		break;
+
+	case suma_matrices:
+		_xdr_argument = (xdrproc_t) xdr_matrices;
+		_xdr_result = (xdrproc_t) xdr_resultado_matriz;
+		local = (char *(*)(char *, struct svc_req *)) _suma_matrices_1;
+		break;
+
+	case resta_matrices:
+		_xdr_argument = (xdrproc_t) xdr_matrices;
+		_xdr_result = (xdrproc_t) xdr_resultado_matriz;
+		local = (char *(*)(char *, struct svc_req *)) _resta_matrices_1;
+		break;
+
+	case transpuesta_matriz:
+		_xdr_argument = (xdrproc_t) xdr_matriz;
+		_xdr_result = (xdrproc_t) xdr_resultado_matriz;
+		local = (char *(*)(char *, struct svc_req *)) _transpuesta_matriz_1;
+		break;
+
+	case area_triangulo:
+		_xdr_argument = (xdrproc_t) xdr_figura;
+		_xdr_result = (xdrproc_t) xdr_double;
+		local = (char *(*)(char *, struct svc_req *)) _area_triangulo_1;
+		break;
+
+	case area_circulo:
+		_xdr_argument = (xdrproc_t) xdr_double;
+		_xdr_result = (xdrproc_t) xdr_double;
+		local = (char *(*)(char *, struct svc_req *)) _area_circulo_1;
+		break;
+
+	case area_trapecio:
+		_xdr_argument = (xdrproc_t) xdr_figura;
+		_xdr_result = (xdrproc_t) xdr_double;
+		local = (char *(*)(char *, struct svc_req *)) _area_trapecio_1;
 		break;
 
 	default:

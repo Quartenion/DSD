@@ -58,3 +58,19 @@ xdr_matrices (XDR *xdrs, matrices *objp)
 		 return FALSE;
 	return TRUE;
 }
+
+bool_t
+xdr_figura (XDR *xdrs, figura *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_double (xdrs, &objp->base))
+		 return FALSE;
+	 if (!xdr_double (xdrs, &objp->altura))
+		 return FALSE;
+	 if (!xdr_double (xdrs, &objp->radio))
+		 return FALSE;
+	 if (!xdr_double (xdrs, &objp->base_menor))
+		 return FALSE;
+	return TRUE;
+}

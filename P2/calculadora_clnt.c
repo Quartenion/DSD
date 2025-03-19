@@ -69,6 +69,51 @@ division_1(operandos arg1,  CLIENT *clnt)
 	return (&clnt_res);
 }
 
+double *
+modulo_1(operandos arg1,  CLIENT *clnt)
+{
+	static double clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, modulo,
+		(xdrproc_t) xdr_operandos, (caddr_t) &arg1,
+		(xdrproc_t) xdr_double, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+double *
+potencia_1(operandos arg1,  CLIENT *clnt)
+{
+	static double clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, potencia,
+		(xdrproc_t) xdr_operandos, (caddr_t) &arg1,
+		(xdrproc_t) xdr_double, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+double *
+raiz_1(double arg1,  CLIENT *clnt)
+{
+	static double clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, raiz,
+		(xdrproc_t) xdr_double, (caddr_t) &arg1,
+		(xdrproc_t) xdr_double, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
 resultado_matriz *
 multiplicar_matrices_1(matrices arg1,  CLIENT *clnt)
 {
@@ -78,6 +123,96 @@ multiplicar_matrices_1(matrices arg1,  CLIENT *clnt)
 	if (clnt_call (clnt, multiplicar_matrices,
 		(xdrproc_t) xdr_matrices, (caddr_t) &arg1,
 		(xdrproc_t) xdr_resultado_matriz, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+resultado_matriz *
+suma_matrices_1(matrices arg1,  CLIENT *clnt)
+{
+	static resultado_matriz clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, suma_matrices,
+		(xdrproc_t) xdr_matrices, (caddr_t) &arg1,
+		(xdrproc_t) xdr_resultado_matriz, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+resultado_matriz *
+resta_matrices_1(matrices arg1,  CLIENT *clnt)
+{
+	static resultado_matriz clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, resta_matrices,
+		(xdrproc_t) xdr_matrices, (caddr_t) &arg1,
+		(xdrproc_t) xdr_resultado_matriz, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+resultado_matriz *
+transpuesta_matriz_1(matriz arg1,  CLIENT *clnt)
+{
+	static resultado_matriz clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, transpuesta_matriz,
+		(xdrproc_t) xdr_matriz, (caddr_t) &arg1,
+		(xdrproc_t) xdr_resultado_matriz, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+double *
+area_triangulo_1(figura arg1,  CLIENT *clnt)
+{
+	static double clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, area_triangulo,
+		(xdrproc_t) xdr_figura, (caddr_t) &arg1,
+		(xdrproc_t) xdr_double, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+double *
+area_circulo_1(double arg1,  CLIENT *clnt)
+{
+	static double clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, area_circulo,
+		(xdrproc_t) xdr_double, (caddr_t) &arg1,
+		(xdrproc_t) xdr_double, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+double *
+area_trapecio_1(figura arg1,  CLIENT *clnt)
+{
+	static double clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, area_trapecio,
+		(xdrproc_t) xdr_figura, (caddr_t) &arg1,
+		(xdrproc_t) xdr_double, (caddr_t) &clnt_res,
 		TIMEOUT) != RPC_SUCCESS) {
 		return (NULL);
 	}

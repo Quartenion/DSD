@@ -198,8 +198,3 @@ int main(int argc, char *argv[]) {
    calc_prog_1(argv[1]);
    exit(0);
 }
-
-
-
-
-

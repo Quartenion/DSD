@@ -4,9 +4,28 @@
 * as a guideline for developing your own functions.
 */
 
+
 #include "calculadora.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+
+// Función para leer una matriz desde la entrada estándar
+void leer_matriz(matriz *m, char nombre) {
+   printf("Ingrese las dimensiones de la matriz %c (filas columnas): ", nombre);
+   scanf("%d %d", &m->filas, &m->columnas);
+
+
+   m->valores.valores_len = m->filas * m->columnas;
+   m->valores.valores_val = (double *)malloc(sizeof(double) * m->valores.valores_len);
+
+
+   printf("Ingrese los valores de la matriz %c:\n", nombre);
+   for (int i = 0; i < m->valores.valores_len; i++) {
+       scanf("%lf", &m->valores.valores_val[i]);
+   }
+}
+
 
 void calc_prog_1(char *host) {
    CLIENT *clnt;
@@ -14,14 +33,17 @@ void calc_prog_1(char *host) {
    operandos op;
    int opcion;
 
+
    matrices mat;
    resultado_matriz *res_mat;
+
 
    clnt = clnt_create(host, CALC_PROG, CALC_VER, "udp");
    if (clnt == NULL) {
        clnt_pcreateerror(host);
        exit(1);
    }
+
 
    while (1) {
        printf("\nCalculadora RPC:\n");
@@ -30,19 +52,25 @@ void calc_prog_1(char *host) {
        printf("3. Multiplicacion\n");
        printf("4. Division\n");
        printf("5. Módulo\n");
-	   printf("6. Potencia\n");
-	   printf("8. Multiplicación de Matrices\n");
+       printf("6. Potencia\n");
+       printf("7. Raíz\n");
+       printf("8. Multiplicación de Matrices\n");
+       printf("9. Suma de Matrices\n");
+       printf("10. Resta de Matrices\n");
        printf("0. Salir\n");
        printf("Seleccione una opción: ");
        scanf("%d", &opcion);
+
 
        if (opcion == 0) {
            break;
        }
 
-       if (opcion >= 1 && opcion <= 4 || opcion == 6) {
+
+       if (opcion >= 1 && opcion <= 7) {
            printf("Ingrese dos números: ");
            scanf("%lf %lf", &op.a, &op.b);
+
 
            switch (opcion) {
                case 1:
@@ -83,53 +111,55 @@ void calc_prog_1(char *host) {
                        printf("Resultado del módulo: %.2f\n", *result);
                    }
                    break;
-				case 6:
-					result = potencia_1(op, clnt);
-					if (result != NULL) {
-						printf("Resultado de la potencia: %.2f\n", *result);
-					}
-					break;
+               case 6:
+                   result = potencia_1(op, clnt);
+                   if (result != NULL) {
+                       printf("Resultado de la potencia: %.2f\n", *result);
+                   }
+                   break;
+               case 7:
+                   result = raiz_1(op, clnt);
+                   if (result != NULL) {
+                       printf("Resultado de la raíz: %.2f\n", *result);
+                   }
+                   break;
            }
            if (result == NULL) {
                clnt_perror(clnt, "Error en la llamada RPC");
            }
        }
 
-       else if (opcion == 8) { // Multiplicación de matrices
-           printf("Ingrese las dimensiones de la matriz A (filas columnas): ");
-           scanf("%d %d", &mat.A.filas, &mat.A.columnas);
 
-           mat.A.valores.valores_len = mat.A.filas * mat.A.columnas;
-           mat.A.valores.valores_val = (double *)malloc(sizeof(double) * mat.A.valores.valores_len);
+       else if (opcion >= 8 && opcion <= 10) {
+           // Leer matrices A y B
+           leer_matriz(&mat.A, 'A');
+           leer_matriz(&mat.B, 'B');
 
-           printf("Ingrese los valores de la matriz A:\n");
-           for (int i = 0; i < mat.A.valores.valores_len; i++) {
-               scanf("%lf", &mat.A.valores.valores_val[i]);
-           }
 
-           printf("Ingrese las dimensiones de la matriz B (filas columnas): ");
-           scanf("%d %d", &mat.B.filas, &mat.B.columnas);
-
-           if (mat.A.columnas != mat.B.filas) {
-               printf("Error: El número de columnas de A debe ser igual al número de filas de B\n");
+           // Verificar si la operación de matrices es válida
+           if ((opcion == 8 && mat.A.columnas != mat.B.filas) ||  // Multiplicación
+               (opcion >= 9 && (mat.A.filas != mat.B.filas || mat.A.columnas != mat.B.columnas))) {  // Suma/Resta
+               printf("Error: Las dimensiones de las matrices no permiten esta operación.\n");
                free(mat.A.valores.valores_val);
+               free(mat.B.valores.valores_val);
                continue;
            }
 
-           mat.B.valores.valores_len = mat.B.filas * mat.B.columnas;
-           mat.B.valores.valores_val = (double *)malloc(sizeof(double) * mat.B.valores.valores_len);
 
-           printf("Ingrese los valores de la matriz B:\n");
-           for (int i = 0; i < mat.B.valores.valores_len; i++) {
-               scanf("%lf", &mat.B.valores.valores_val[i]);
+           // Llamada RPC según la operación seleccionada
+           if (opcion == 8) {
+               res_mat = multiplicar_matrices_1(mat, clnt);
+           } else if (opcion == 9) {
+               res_mat = suma_matrices_1(mat, clnt);
+           } else {
+               res_mat = resta_matrices_1(mat, clnt);
            }
 
-           // Llamada RPC para multiplicar matrices
-           res_mat = multiplicar_matrices_1(mat, clnt);
 
            if (res_mat == NULL) {
-               clnt_perror(clnt, "Error en la llamada RPC de multiplicación de matrices");
+               clnt_perror(clnt, "Error en la llamada RPC de matrices");
            } else {
+               // Mostrar matriz resultado
                printf("\nMatriz Resultado (%d x %d):\n", res_mat->filas, res_mat->columnas);
                for (int i = 0; i < res_mat->filas; i++) {
                    for (int j = 0; j < res_mat->columnas; j++) {
@@ -137,21 +167,28 @@ void calc_prog_1(char *host) {
                    }
                    printf("\n");
                }
+
+
+               // Liberar memoria del resultado
+               free(res_mat->valores.valores_val);
            }
 
-           // Liberar memoria
+
+           // Liberar memoria de las matrices A y B
            free(mat.A.valores.valores_val);
            free(mat.B.valores.valores_val);
-           free(res_mat->valores.valores_val);
        }
+
 
        else {
            printf("Opción inválida\n");
        }
    }
 
+
    clnt_destroy(clnt);
 }
+
 
 int main(int argc, char *argv[]) {
    if (argc < 2) {
@@ -161,3 +198,8 @@ int main(int argc, char *argv[]) {
    calc_prog_1(argv[1]);
    exit(0);
 }
+
+
+
+
+

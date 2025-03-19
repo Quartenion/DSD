@@ -46,14 +46,6 @@ struct matrices {
 };
 typedef struct matrices matrices;
 
-struct figura {
-	double base;
-	double altura;
-	double radio;
-	double base_menor;
-};
-typedef struct figura figura;
-
 #define CALC_PROG 0x20000001
 #define CALC_VER 1
 
@@ -77,8 +69,8 @@ extern  double * modulo_1_svc(operandos , struct svc_req *);
 extern  double * potencia_1(operandos , CLIENT *);
 extern  double * potencia_1_svc(operandos , struct svc_req *);
 #define raiz 7
-extern  double * raiz_1(double , CLIENT *);
-extern  double * raiz_1_svc(double , struct svc_req *);
+extern  double * raiz_1(operandos , CLIENT *);
+extern  double * raiz_1_svc(operandos , struct svc_req *);
 #define multiplicar_matrices 8
 extern  resultado_matriz * multiplicar_matrices_1(matrices , CLIENT *);
 extern  resultado_matriz * multiplicar_matrices_1_svc(matrices , struct svc_req *);
@@ -88,18 +80,6 @@ extern  resultado_matriz * suma_matrices_1_svc(matrices , struct svc_req *);
 #define resta_matrices 10
 extern  resultado_matriz * resta_matrices_1(matrices , CLIENT *);
 extern  resultado_matriz * resta_matrices_1_svc(matrices , struct svc_req *);
-#define transpuesta_matriz 11
-extern  resultado_matriz * transpuesta_matriz_1(matriz , CLIENT *);
-extern  resultado_matriz * transpuesta_matriz_1_svc(matriz , struct svc_req *);
-#define area_triangulo 12
-extern  double * area_triangulo_1(figura , CLIENT *);
-extern  double * area_triangulo_1_svc(figura , struct svc_req *);
-#define area_circulo 13
-extern  double * area_circulo_1(double , CLIENT *);
-extern  double * area_circulo_1_svc(double , struct svc_req *);
-#define area_trapecio 14
-extern  double * area_trapecio_1(figura , CLIENT *);
-extern  double * area_trapecio_1_svc(figura , struct svc_req *);
 extern int calc_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -133,18 +113,6 @@ extern  resultado_matriz * suma_matrices_1_svc();
 #define resta_matrices 10
 extern  resultado_matriz * resta_matrices_1();
 extern  resultado_matriz * resta_matrices_1_svc();
-#define transpuesta_matriz 11
-extern  resultado_matriz * transpuesta_matriz_1();
-extern  resultado_matriz * transpuesta_matriz_1_svc();
-#define area_triangulo 12
-extern  double * area_triangulo_1();
-extern  double * area_triangulo_1_svc();
-#define area_circulo 13
-extern  double * area_circulo_1();
-extern  double * area_circulo_1_svc();
-#define area_trapecio 14
-extern  double * area_trapecio_1();
-extern  double * area_trapecio_1_svc();
 extern int calc_prog_1_freeresult ();
 #endif /* K&R C */
 
@@ -155,14 +123,12 @@ extern  bool_t xdr_matriz (XDR *, matriz*);
 extern  bool_t xdr_resultado_matriz (XDR *, resultado_matriz*);
 extern  bool_t xdr_operandos (XDR *, operandos*);
 extern  bool_t xdr_matrices (XDR *, matrices*);
-extern  bool_t xdr_figura (XDR *, figura*);
 
 #else /* K&R C */
 extern bool_t xdr_matriz ();
 extern bool_t xdr_resultado_matriz ();
 extern bool_t xdr_operandos ();
 extern bool_t xdr_matrices ();
-extern bool_t xdr_figura ();
 
 #endif /* K&R C */
 

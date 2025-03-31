@@ -33,6 +33,14 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('  int factorial(int num1)')
     print('  int mcd(int num1, int num2, int num3, int num4)')
     print('  int mcm(int num1, int num2, int num3, int num4)')
+    print('   suma_vectores( vector1,  vector2)')
+    print('   resta_vectores( vector1,  vector2)')
+    print('  double producto_escalar( vector1,  vector2)')
+    print('   producto_vectorial( vector1,  vector2)')
+    print('  double evaluar_expresion(string expresion)')
+    print('   suma_matrices( matriz1,  matriz2)')
+    print('   resta_matrices( matriz1,  matriz2)')
+    print('   multiplica_matrices( matriz1,  matriz2)')
     print('')
     sys.exit(0)
 
@@ -165,6 +173,54 @@ elif cmd == 'mcm':
         print('mcm requires 4 args')
         sys.exit(1)
     pp.pprint(client.mcm(eval(args[0]), eval(args[1]), eval(args[2]), eval(args[3]),))
+
+elif cmd == 'suma_vectores':
+    if len(args) != 2:
+        print('suma_vectores requires 2 args')
+        sys.exit(1)
+    pp.pprint(client.suma_vectores(eval(args[0]), eval(args[1]),))
+
+elif cmd == 'resta_vectores':
+    if len(args) != 2:
+        print('resta_vectores requires 2 args')
+        sys.exit(1)
+    pp.pprint(client.resta_vectores(eval(args[0]), eval(args[1]),))
+
+elif cmd == 'producto_escalar':
+    if len(args) != 2:
+        print('producto_escalar requires 2 args')
+        sys.exit(1)
+    pp.pprint(client.producto_escalar(eval(args[0]), eval(args[1]),))
+
+elif cmd == 'producto_vectorial':
+    if len(args) != 2:
+        print('producto_vectorial requires 2 args')
+        sys.exit(1)
+    pp.pprint(client.producto_vectorial(eval(args[0]), eval(args[1]),))
+
+elif cmd == 'evaluar_expresion':
+    if len(args) != 1:
+        print('evaluar_expresion requires 1 args')
+        sys.exit(1)
+    pp.pprint(client.evaluar_expresion(args[0],))
+
+elif cmd == 'suma_matrices':
+    if len(args) != 2:
+        print('suma_matrices requires 2 args')
+        sys.exit(1)
+    pp.pprint(client.suma_matrices(eval(args[0]), eval(args[1]),))
+
+elif cmd == 'resta_matrices':
+    if len(args) != 2:
+        print('resta_matrices requires 2 args')
+        sys.exit(1)
+    pp.pprint(client.resta_matrices(eval(args[0]), eval(args[1]),))
+
+elif cmd == 'multiplica_matrices':
+    if len(args) != 2:
+        print('multiplica_matrices requires 2 args')
+        sys.exit(1)
+    pp.pprint(client.multiplica_matrices(eval(args[0]), eval(args[1]),))
 
 else:
     print('Unrecognized method %s' % cmd)

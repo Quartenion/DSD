@@ -11,6 +11,15 @@ service Calculadora {
 
    int factorial(1:int num1),  
    int mcd(1:int num1, 2:int num2, 3:int num3, 4:int num4),  
-   int mcm(1:int num1, 2:int num2, 3:int num3, 4:int num4)
-}
+   int mcm(1:int num1, 2:int num2, 3:int num3, 4:int num4),
 
+   list<double> suma_vectores(1:list<double> vector1, 2:list<double> vector2),
+   list<double> resta_vectores(1:list<double> vector1, 2:list<double> vector2),
+   double producto_escalar(1:list<double> vector1, 2:list<double> vector2),
+   list<double> producto_vectorial(1:list<double> vector1, 2:list<double> vector2),
+   double evaluar_expresion(1:string expresion)
+   
+   list<list<double>> suma_matrices(1:list<list<double>> matriz1, 2:list<list<double>> matriz2),
+   list<list<double>> resta_matrices(1:list<list<double>> matriz1, 2:list<list<double>> matriz2),
+   list<list<double>> multiplica_matrices(1:list<list<double>> matriz1, 2:list<list<double>> matriz2)
+}

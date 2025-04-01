@@ -74,8 +74,6 @@ while True:
             
             num1 = leer_entero("Ingrese el primer número: ")
             num2 = leer_entero("Ingrese el segundo número: ")
-            
-            os.system('clear')
 
             if opcion_basica == 1:
                 resultado = client.suma(num1, num2)
@@ -111,7 +109,6 @@ while True:
             print("4. ATRÁS")
 
             opcion_intermedia = leer_entero("Seleccione una opción: ")
-            os.system('clear')
 
             if opcion_intermedia == 4:
                 break
@@ -152,7 +149,6 @@ while True:
             print("9. ATRÁS")
             
             opcion_avanzada = leer_entero("Seleccione una opción: ")
-            os.system('clear')
 
             if opcion_avanzada == 9:
                 break

@@ -17,9 +17,14 @@ service Calculadora {
    list<double> resta_vectores(1:list<double> vector1, 2:list<double> vector2),
    double producto_escalar(1:list<double> vector1, 2:list<double> vector2),
    list<double> producto_vectorial(1:list<double> vector1, 2:list<double> vector2),
-   double evaluar_expresion(1:string expresion)
+   double evaluar_expresion(1:string expresion),
    
    list<list<double>> suma_matrices(1:list<list<double>> matriz1, 2:list<list<double>> matriz2),
    list<list<double>> resta_matrices(1:list<list<double>> matriz1, 2:list<list<double>> matriz2),
-   list<list<double>> multiplica_matrices(1:list<list<double>> matriz1, 2:list<list<double>> matriz2)
+   list<list<double>> multiplica_matrices(1:list<list<double>> matriz1, 2:list<list<double>> matriz2),
+
+   // Nuevas funciones trigonométricas
+   double seno(1:double num),
+   double coseno(1:double num),
+   double tangente(1:double num)
 }

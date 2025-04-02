@@ -38,9 +38,10 @@ while True:
     print("1. OPERACIONES BÁSICAS")
     print("2. OPERACIONES INTERMEDIAS")
     print("3. OPERACIONES AVANZADAS")
-    print("4. SALIR")
+    print("4. OPERACIONES TRIGONOMÉTRICAS")
+    print("5. SALIR")
     opcion = leer_entero("Seleccione una opción: ")
-    if opcion not in range(1, 5):
+    if opcion not in range(1, 6):
         os.system('clear')
         print("POR FAVOR, INTRODUZCA UN NÚMERO ENTRE 1 Y 4")
         input("\nPresione ENTER para continuar...")
@@ -254,6 +255,40 @@ while True:
 
 
     elif opcion == 4:
+        while True:
+            print("-=+=-MENÚ DE OPERACIONES TRIGONOMÉTRICAS-=+=-")
+            print("1. SENO")
+            print("2. COSENO")
+            print("3. TANGENTE")
+            print("4. ATRÁS")
+
+            opcion_trigonometrica = leer_entero("Seleccione una opción: ")
+
+            if opcion_trigonometrica == 4:
+                break
+
+            if opcion_trigonometrica not in range(1, 4):
+                print("POR FAVOR, INTRODUZCA UN NÚMERO ENTRE 1 Y 4")
+                input("\nPresione ENTER para continuar...")
+                os.system('clear')
+                continue
+
+            angulo = leer_entero("Ingrese el ángulo en grados: ")
+
+            if opcion_trigonometrica == 1:
+                resultado = client.seno(angulo)
+                print(f"Seno({angulo}) = {resultado}")
+            elif opcion_trigonometrica == 2:
+                resultado = client.coseno(angulo)
+                print(f"Coseno({angulo}) = {resultado}")
+            elif opcion_trigonometrica == 3:
+                resultado = client.tangente(angulo)
+                print(f"Tangente({angulo}) = {resultado}")
+
+            input("\nPresione ENTER para continuar...")
+            os.system('clear')
+
+    elif opcion == 5:
         print("Saliendo...")
         break
 

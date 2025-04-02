@@ -16,6 +16,11 @@ logging.basicConfig(level=logging.DEBUG)
 class CalculadoraHandler:
     def __init__(self):
         self.log = {}
+        self.transport_segundo = TSocket.TSocket("localhost", 9091)
+        self.transport_segundo = TTransport.TBufferedTransport(self.transport_segundo)
+        self.protocol_segundo = TBinaryProtocol.TBinaryProtocol(self.transport_segundo)
+        self.cliente_segundo = Calculadora.Client(self.protocol_segundo)
+        self.transport_segundo.open()
 
     def suma(self, n1, n2):
         print(f"Sumando {n1} + {n2}")
@@ -113,6 +118,15 @@ class CalculadoraHandler:
             return resultado
         except Exception as e:
             raise ValueError(f"Error al evaluar la expresión: {e}")
+    
+    def seno(self, num):
+        return self.cliente_segundo.seno(num)
+
+    def coseno(self, num):
+        return self.cliente_segundo.coseno(num)
+
+    def tangente(self, num):
+        return self.cliente_segundo.tangente(num)
 
 if __name__ == "__main__":
     handler = CalculadoraHandler()

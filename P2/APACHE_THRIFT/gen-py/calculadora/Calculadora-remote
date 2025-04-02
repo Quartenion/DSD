@@ -41,6 +41,9 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('   suma_matrices( matriz1,  matriz2)')
     print('   resta_matrices( matriz1,  matriz2)')
     print('   multiplica_matrices( matriz1,  matriz2)')
+    print('  double seno(double num)')
+    print('  double coseno(double num)')
+    print('  double tangente(double num)')
     print('')
     sys.exit(0)
 
@@ -221,6 +224,24 @@ elif cmd == 'multiplica_matrices':
         print('multiplica_matrices requires 2 args')
         sys.exit(1)
     pp.pprint(client.multiplica_matrices(eval(args[0]), eval(args[1]),))
+
+elif cmd == 'seno':
+    if len(args) != 1:
+        print('seno requires 1 args')
+        sys.exit(1)
+    pp.pprint(client.seno(eval(args[0]),))
+
+elif cmd == 'coseno':
+    if len(args) != 1:
+        print('coseno requires 1 args')
+        sys.exit(1)
+    pp.pprint(client.coseno(eval(args[0]),))
+
+elif cmd == 'tangente':
+    if len(args) != 1:
+        print('tangente requires 1 args')
+        sys.exit(1)
+    pp.pprint(client.tangente(eval(args[0]),))
 
 else:
     print('Unrecognized method %s' % cmd)

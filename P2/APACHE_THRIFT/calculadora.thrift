@@ -23,7 +23,6 @@ service Calculadora {
    list<list<double>> resta_matrices(1:list<list<double>> matriz1, 2:list<list<double>> matriz2),
    list<list<double>> multiplica_matrices(1:list<list<double>> matriz1, 2:list<list<double>> matriz2),
 
-   // Nuevas funciones trigonométricas
    double seno(1:double num),
    double coseno(1:double num),
    double tangente(1:double num)

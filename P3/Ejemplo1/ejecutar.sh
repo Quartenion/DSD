@@ -12,20 +12,27 @@ sleep 2
 echo "Iniciando el rmiregistry..."
 rmiregistry &  # Inicia el rmiregistry en segundo plano
 
-# Asegúrate de que rmiregistry esté corriendo antes de continuar
-sleep 2
+# Esperar un poco más para asegurarse de que el rmiregistry esté listo
+sleep 5
+
+# Verificar si el rmiregistry está corriendo (opcional)
+if ! pgrep -x "rmiregistry" > /dev/null
+then
+    echo "El rmiregistry no se ha iniciado correctamente. Abortando."
+    exit 1
+fi
 
 echo "Compilando con javac..."
 javac *.java
 sleep 2
 
 echo "Lanzando el servidor..."
-java -cp . -Djava.rmi.server.codebase=file:./ -Djava.rmi.server.hostname=localhost Ejemplo &
+java -Djava.security.policy=server.policy -cp . -Djava.rmi.server.codebase=file:./ -Djava.rmi.server.hostname=localhost Ejemplo &
 sleep 2
 
 echo "Lanzando el primer cliente..."
-java -cp . Cliente_Ejemplo localhost 0
+java -Djava.security.policy=server.policy -cp . Cliente_Ejemplo localhost 0
 sleep 2
 
 echo "Lanzando el segundo cliente..."
-java -cp . Cliente_Ejemplo localhost 3
+java -Djava.security.policy=server.policy -cp . Cliente_Ejemplo localhost 3

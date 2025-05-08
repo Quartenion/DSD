@@ -79,7 +79,7 @@ public class ProgramaCliente {
 
         try {
             Registry mireg = LocateRegistry.getRegistry(host, 1099);
-            InterfazServidorCliente servidor = (InterfazServidorCliente) mireg.lookup(nombreServidor);
+            Donacion_I servidor = (Donacion_I) mireg.lookup(nombreServidor);
 
             Scanner sc = new Scanner(System.in);
             int opcion = 0;

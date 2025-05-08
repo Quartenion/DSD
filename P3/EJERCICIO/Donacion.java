@@ -9,7 +9,7 @@ import java.rmi.registry.Registry;
 
 import java.util.ArrayList;
 
-public class DonacionesReplica extends UnicastRemoteObject implements InterfazServidorCliente, InterfazServidorReplica {
+public class Donacion extends UnicastRemoteObject implements Donacion_I {
     private String servidor;
     private String replica;
     private float subtotalDonado;
@@ -17,7 +17,7 @@ public class DonacionesReplica extends UnicastRemoteObject implements InterfazSe
     private Map<String, Cliente> clientesRegistrados;
 
     // Constructor 
-    public DonacionesReplica(String servidor, String replica) throws RemoteException {
+    public Donacion(String servidor, String replica) throws RemoteException {
         this.servidor = servidor;
         this.replica = replica;
         this.subtotalDonado = 0.0f;
@@ -27,7 +27,7 @@ public class DonacionesReplica extends UnicastRemoteObject implements InterfazSe
     // Comprueba si un cliente ya esta registrado o en la replica 
     @Override
     public boolean registrado(String nombreCliente) throws RemoteException {
-        InterfazServidorReplica servidorReplica = obtenerReplica("localhost", this.replica);
+        Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
         return this.existeCliente(nombreCliente) || servidorReplica.existeCliente(nombreCliente);
     }
 
@@ -37,7 +37,7 @@ public class DonacionesReplica extends UnicastRemoteObject implements InterfazSe
         if (existeCliente(nombreCliente)) return false;
 
         // Verificar si está registrado en la réplica
-        InterfazServidorReplica servidorReplica = obtenerReplica("localhost", this.replica);
+        Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
         if (servidorReplica.existeCliente(nombreCliente)) return false;
 
         // Registrar cliente en el servidor con menos clientes
@@ -55,7 +55,7 @@ public class DonacionesReplica extends UnicastRemoteObject implements InterfazSe
         if (servidorCliente.equals(this.servidor)) {
             return existeCliente(nombreCliente);
         } else if (servidorCliente.equals(this.replica)) {
-            InterfazServidorReplica servidorReplica = obtenerReplica("localhost", this.replica);
+            Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
             return servidorReplica.existeCliente(nombreCliente);
         }
         return false;
@@ -65,7 +65,7 @@ public class DonacionesReplica extends UnicastRemoteObject implements InterfazSe
     public String identificarCliente(String nombreCliente) throws RemoteException {
         if (existeCliente(nombreCliente)) return this.servidor;
 
-        InterfazServidorReplica servidorReplica = obtenerReplica("localhost", this.replica);
+        Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
         if (servidorReplica.existeCliente(nombreCliente)) return this.replica;
 
         return "";
@@ -91,7 +91,7 @@ public class DonacionesReplica extends UnicastRemoteObject implements InterfazSe
         if (servidorCliente.equals(this.servidor)) {
             return getSubtotalDonado();
         } else if (servidorCliente.equals(this.replica)) {
-            InterfazServidorReplica servidorReplica = obtenerReplica("localhost", this.replica);
+            Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
             return servidorReplica.getSubtotalDonado();
         }
         return 0.0f;
@@ -113,12 +113,12 @@ public class DonacionesReplica extends UnicastRemoteObject implements InterfazSe
 
     // Devuelve una referencia a la replica del servidor, es una referencia a null si no se encuentra la replica
     @Override
-    public InterfazServidorReplica obtenerReplica(String host, String nombreReplica) throws RemoteException {
-        InterfazServidorReplica servidorReplica = null;
+    public Donacion_I obtenerReplica(String host, String nombreReplica) throws RemoteException {
+        Donacion_I servidorReplica = null;
 
         try {
             Registry registroRMI = LocateRegistry.getRegistry(host, 1099);
-            servidorReplica = (InterfazServidorReplica) registroRMI.lookup(nombreReplica);
+            servidorReplica = (Donacion_I) registroRMI.lookup(nombreReplica);
         } catch (NotBoundException | RemoteException e) {
             System.out.println("No se encuentra el servidor replica con el nombre " + nombreReplica);
         }
@@ -146,7 +146,7 @@ public class DonacionesReplica extends UnicastRemoteObject implements InterfazSe
         String nombreServidor = identificarCliente(nombreCliente);
 
         if(nombreServidor.equals(this.replica)){
-            InterfazServidorReplica servidorReplica = this.obtenerReplica("localhost", this.replica);
+            Donacion_I servidorReplica = this.obtenerReplica("localhost", this.replica);
             Cliente cliente = servidorReplica.getClientesRegistrados().get(nombreCliente);
             return cliente.getTotal();   
         }else if(nombreServidor.equals(this.servidor)){
@@ -169,7 +169,7 @@ public class DonacionesReplica extends UnicastRemoteObject implements InterfazSe
             incrementarSubtotalDonado(donacion);
             System.out.println("El cliente " + nombreCliente + " ha donado " + donacion);
         } else if (servidorCliente.equals(this.replica)) {
-            InterfazServidorReplica servidorReplica = obtenerReplica("localhost", this.replica);
+            Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
             servidorReplica.donar(nombreCliente, donacion);
         }
     }
@@ -177,24 +177,33 @@ public class DonacionesReplica extends UnicastRemoteObject implements InterfazSe
 
     @Override
     public float getTotalDonado() throws RemoteException {
-        InterfazServidorReplica servidorReplica = obtenerReplica("localhost", this.replica);
+        Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
         return this.subtotalDonado + servidorReplica.getSubtotalDonado();
     }
 
-    private void agregarDonantesDeServidor(ArrayList<Cliente> lista, InterfazServidorReplica servidor) throws RemoteException {
-        for (Cliente cliente : servidor.getClientesRegistrados().values()) {
-            if (cliente.getNumDonaciones() > 0) {
-                lista.add(cliente);
+    @Override
+    public ArrayList<Cliente> getListaDonantes() throws RemoteException{
+        Donacion_I servidorReplica = this.obtenerReplica("localhost", this.replica);
+        Map<String,Cliente> clientesReplica = servidorReplica.getClientesRegistrados();
+
+        Map<String,Cliente> clientesServidor = this.getClientesRegistrados();
+
+        ArrayList<Cliente> listaClientes = new ArrayList<>();
+
+          // Agregar los clientes de la réplica al ArrayList
+        for (Cliente cliente : clientesReplica.values()) {
+            if(cliente.getNumDonaciones() > 0){
+                listaClientes.add(cliente);
             }
         }
-    }
 
-    @Override
-    public ArrayList<Cliente> getListaDonantes() throws RemoteException {
-        ArrayList<Cliente> listaDonantes = new ArrayList<>();
-        agregarDonantesDeServidor(listaDonantes, this);
-        InterfazServidorReplica servidorReplica = obtenerReplica("localhost", this.replica);
-        agregarDonantesDeServidor(listaDonantes, servidorReplica);
-        return listaDonantes;
+        // Agregar los clientes del servidor actual al ArrayList
+        for (Cliente cliente : clientesServidor.values()) {
+            if(cliente.getNumDonaciones() > 0){
+                listaClientes.add(cliente);
+            }
+        }
+
+        return listaClientes;
     }
 }

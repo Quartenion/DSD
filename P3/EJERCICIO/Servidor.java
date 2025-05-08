@@ -15,7 +15,7 @@ public class Servidor {
             String nombreServidor = "servidor";
             String nombreReplica = "servidorReplica";
             Registry reg=LocateRegistry.createRegistry(1099);
-            DonacionesServidor donacionesServidor = new DonacionesServidor(nombreServidor, nombreReplica);
+            Donacion_I donacionesServidor = new Donacion(nombreServidor, nombreReplica);
             Naming.rebind(nombreServidor, donacionesServidor);
             System.out.println("El servidor principal esta operativo");
         } catch (RemoteException | MalformedURLException e) {

@@ -44,7 +44,7 @@ public class DonacionesServidor extends UnicastRemoteObject implements InterfazS
     // Devuelve true si el cliente se registra en uno de los servidores, false si no
     // se registra
     @Override
-    public boolean realizarRegistro(String nombreCliente) throws RemoteException {
+    public boolean registrar(String nombreCliente) throws RemoteException {
         // Se comprueba si existe en este servidor
         boolean registrado = this.existeCliente(nombreCliente);
         boolean resultado = false;
@@ -55,8 +55,8 @@ public class DonacionesServidor extends UnicastRemoteObject implements InterfazS
             boolean registradoEnReplica = servidorReplica.existeCliente(nombreCliente);
 
             if (!registradoEnReplica) {
-                int clientesEnServidor = this.obtenerNumeroClientesRegistrados();
-                int clientesEnReplica = servidorReplica.obtenerNumeroClientesRegistrados();
+                int clientesEnServidor = this.getNumClientesRegistrados();
+                int clientesEnReplica = servidorReplica.getNumClientesRegistrados();
 
                 if (clientesEnServidor < clientesEnReplica)
                     this.confirmarRegistroCliente(nombreCliente, this.servidor);
@@ -70,18 +70,6 @@ public class DonacionesServidor extends UnicastRemoteObject implements InterfazS
         return resultado;
     }
 
-    // Realiza una donacion por parte de un cliente a partir de su nombre 
-    @Override
-    public void realizarDonacion(String nombreCliente, float donacion) throws RemoteException {
-        String nombreServidor = identificarCliente(nombreCliente);
-        if(nombreServidor.equals(this.replica)){
-            InterfazServidorReplica servidorReplica = this.obtenerReplica("localhost", this.replica);
-            servidorReplica.donar(nombreCliente, donacion);
-        }else{
-            this.donar(nombreCliente,donacion);
-        }
-
-    }
     // Inicia sesion 
     @Override
     public Boolean inicioSesion(String nombreCliente) throws RemoteException {
@@ -139,16 +127,13 @@ public class DonacionesServidor extends UnicastRemoteObject implements InterfazS
 
     // Devuelve el numero de clientes registrados
     @Override
-    public int obtenerNumeroClientesRegistrados() throws RemoteException {
+    public int getNumClientesRegistrados() throws RemoteException {
         return clientesRegistrados.size();
     }
 
-    
-    
-
     // Comprueba que servidor esta el cliente registrado para buscar el subtotal del servidor
     @Override
-    public float obtenerSubtotalDonado(String nombreCliente) throws RemoteException {
+    public float getSubtotalDonado(String nombreCliente) throws RemoteException {
         String nombreServidor = identificarCliente(nombreCliente);
         float donado = 0.0f;
 
@@ -207,16 +192,16 @@ public class DonacionesServidor extends UnicastRemoteObject implements InterfazS
 
     // Obtiene la cantidad total donada por un cliente
     @Override
-    public float obtenerDonacionCliente(String nombreCliente) throws RemoteException {
+    public float getDonacionCliente(String nombreCliente) throws RemoteException {
         String nombreServidor = identificarCliente(nombreCliente);
 
         if(nombreServidor.equals(this.replica)){
             InterfazServidorReplica servidorReplica = this.obtenerReplica("localhost", this.replica);
             Cliente cliente = servidorReplica.getClientesRegistrados().get(nombreCliente);
-            return cliente.obtenerDonacionTotal();   
+            return cliente.getTotal();   
         }else if(nombreServidor.equals(this.servidor)){
             Cliente cliente = this.clientesRegistrados.get(nombreCliente);
-            return cliente.obtenerDonacionTotal(); 
+            return cliente.getTotal(); 
         }
         return 0;
     }
@@ -225,20 +210,29 @@ public class DonacionesServidor extends UnicastRemoteObject implements InterfazS
         return clientesRegistrados;
     }
     // Donar en el servidor correspondiente cuando ya se ha comprobado en que servidor esta el cliente
-    public void donar(String nombreCliente, float donacion) throws RemoteException{
-        Cliente cliente = clientesRegistrados.get(nombreCliente);
-        this.incrementarSubtotalDonado(donacion);
-        cliente.donar(donacion);
-        System.out.println("El cliente con el nombre " + nombreCliente + " ha donado " + donacion);
+    @Override
+    public void donar(String nombreCliente, float donacion) throws RemoteException {
+        String nombreServidor = identificarCliente(nombreCliente);
+        
+        if(nombreServidor.equals(this.replica)){
+            InterfazServidorReplica servidorReplica = this.obtenerReplica("localhost", this.replica);
+            servidorReplica.donar(nombreCliente, donacion);
+        } else {
+            Cliente cliente = clientesRegistrados.get(nombreCliente);
+            this.incrementarSubtotalDonado(donacion);
+            cliente.donar(donacion);
+            System.out.println("El cliente con el nombre " + nombreCliente + " ha donado " + donacion);
+        }
     }
 
-    public float obtenerTotalDonadoServidores() throws RemoteException{
+
+    public float getTotalDonado() throws RemoteException{
         InterfazServidorReplica servidorReplica = this.obtenerReplica("localhost", this.replica);
         return servidorReplica.getSubtotalDonado() + this.getSubtotalDonado();
     }
 
     // obtiene la lista de clientes que han donado en ambos servidores
-    public ArrayList<Cliente> obtenerListeDonantes() throws RemoteException{
+    public ArrayList<Cliente> getListaDonantes() throws RemoteException{
         InterfazServidorReplica servidorReplica = this.obtenerReplica("localhost", this.replica);
         Map<String,Cliente> clientesReplica = servidorReplica.getClientesRegistrados();
 
@@ -248,14 +242,14 @@ public class DonacionesServidor extends UnicastRemoteObject implements InterfazS
 
           // Agregar los clientes de la réplica al ArrayList
         for (Cliente cliente : clientesReplica.values()) {
-            if(cliente.obtenerNumeroDonaciones() > 0){
+            if(cliente.getNumDonaciones() > 0){
                 listaClientes.add(cliente);
             }
         }
 
         // Agregar los clientes del servidor actual al ArrayList
         for (Cliente cliente : clientesServidor.values()) {
-            if(cliente.obtenerNumeroDonaciones() > 0){
+            if(cliente.getNumDonaciones() > 0){
                 listaClientes.add(cliente);
             }
         }
@@ -274,19 +268,19 @@ public class DonacionesServidor extends UnicastRemoteObject implements InterfazS
 
         // Agregar los clientes de la réplica al ArrayList
         for (Cliente cliente : clientesReplica.values()) {
-            if(cliente.obtenerNumeroDonaciones() > 0){
+            if(cliente.getNumDonaciones() > 0){
                 listaClientes.add(cliente);
             }
         }
 
         // Agregar los clientes del servidor actual al ArrayList
         for (Cliente cliente : clientesServidor.values()) {
-            if(cliente.obtenerNumeroDonaciones() > 0){
+            if(cliente.getNumDonaciones() > 0){
                 listaClientes.add(cliente);
             }
         }
 
-        listaClientes.sort((c1, c2) -> Float.compare(c2.obtenerDonacionTotal(), c1.obtenerDonacionTotal()));
+        listaClientes.sort((c1, c2) -> Float.compare(c2.getTotal(), c1.getTotal()));
 
             return listaClientes;
     }

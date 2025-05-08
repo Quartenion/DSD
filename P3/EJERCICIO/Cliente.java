@@ -7,7 +7,6 @@ public class Cliente implements Serializable{
     private ArrayList<Float> donaciones;
     private float donacionTotal;
     private int numeroDonaciones;
-    private float donacionMaxima;
 
     Cliente(String nombre)
     {
@@ -15,49 +14,28 @@ public class Cliente implements Serializable{
         this.donaciones = new ArrayList<>();
         this.donacionTotal = 0.0f;
         this.numeroDonaciones = 0;
-        this.donacionMaxima = 0.0f;
     }
 
-    public String obtenerNombre()
-    {
-        return nombre;
-    }
-
-
-    public float obtenerUltimaDonacion()
-    {
-        return donaciones.get(donaciones.size() - 1);
-    }
-
-    public float obtenerDonacionTotal()
+    public float getTotal()
     {
         return donacionTotal;
     }
 
-    public int obtenerNumeroDonaciones()
+    public int getNumDonaciones()
     {
         return numeroDonaciones;
     }
 
-    public float obtenerDonacionMaxima()
+    public String getNombre()
     {
-        return donacionMaxima;
-    }
-
-    public void cambiarNombre(String nombre)
-    {
-        this.nombre = nombre;
+        return nombre;
     }
 
     public void donar(float donacion)
     {
         this.donaciones.add(donacion);
         this.donacionTotal += donacion;
-
-        if(donacion > this.donacionMaxima)
-            this.donacionMaxima = donacion;
-        
-            this.incrementarNumeroDonaciones();
+        this.incrementarNumeroDonaciones();
     }
 
     public void incrementarNumeroDonaciones()

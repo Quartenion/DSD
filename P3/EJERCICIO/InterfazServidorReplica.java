@@ -16,7 +16,7 @@ public interface InterfazServidorReplica extends Remote {
 
     // Devuelve el numero de clientes registrados en el servidor
     // Necesario para hacer los registros en el servidor con menor numero de clientes
-    public int obtenerNumeroClientesRegistrados() throws RemoteException;
+    public int getNumClientesRegistrados() throws RemoteException;
 
     // Confirma el registro de un cliente en un servidor a partir de su nombre, password y nombre del servidor
     public void confirmarRegistroCliente(String nombreCliente, String nombreServidor) throws RemoteException;

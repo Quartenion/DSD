@@ -27,93 +27,92 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
     // Comprueba si un cliente ya esta registrado o en la replica 
     @Override
     public boolean registrado(String nombreCliente) throws RemoteException {
-        Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
-        return this.existeCliente(nombreCliente) || servidorReplica.existeCliente(nombreCliente);
+        Donacion_I servidorReplica = getReplica("localhost", this.replica);
+        return this.existe(nombreCliente) || servidorReplica.existe(nombreCliente);
     }
 
     @Override
-    public boolean registrar(String nombreCliente) throws RemoteException {
-        // Verificar si ya está registrado en este servidor
-        if (existeCliente(nombreCliente)) return false;
+    public boolean registrar(String nombreCliente, String servidorDestino) throws RemoteException {
+        // Verificar si el cliente ya está registrado en el servidor actual
+        if (existe(nombreCliente)) return false;
 
-        // Verificar si está registrado en la réplica
-        Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
-        if (servidorReplica.existeCliente(nombreCliente)) return false;
+        // Verificar si el cliente ya está registrado en la réplica
+        Donacion_I servidorReplica = getReplica("localhost", this.replica);
+        if (servidorReplica.existe(nombreCliente)) return false;
 
-        // Registrar cliente en el servidor con menos clientes
-        if (getNumClientesRegistrados() < servidorReplica.getNumClientesRegistrados()) {
+        // Verificar en qué servidor se quiere registrar el cliente
+        if (servidorDestino.equals(this.servidor)) {
+            // Registrar en el servidor actual
             confirmarRegistroCliente(nombreCliente, this.servidor);
-        } else {
+        } else if (servidorDestino.equals(this.replica)) {
+            // Registrar en la réplica
             servidorReplica.confirmarRegistroCliente(nombreCliente, this.replica);
+        } else {
+            System.out.println("Servidor de destino no válido.");
+            return false;
         }
+
         return true;
     }
 
+
     @Override
-    public Boolean inicioSesion(String nombreCliente) throws RemoteException {
+    public Boolean iniciarSesion(String nombreCliente) throws RemoteException {
         String servidorCliente = identificarCliente(nombreCliente);
         if (servidorCliente.equals(this.servidor)) {
-            return existeCliente(nombreCliente);
+            return existe(nombreCliente);
         } else if (servidorCliente.equals(this.replica)) {
-            Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
-            return servidorReplica.existeCliente(nombreCliente);
+            Donacion_I servidorReplica = getReplica("localhost", this.replica);
+            return servidorReplica.existe(nombreCliente);
         }
         return false;
     }
 
     @Override
     public String identificarCliente(String nombreCliente) throws RemoteException {
-        if (existeCliente(nombreCliente)) return this.servidor;
+        if (existe(nombreCliente)) return this.servidor;
 
-        Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
-        if (servidorReplica.existeCliente(nombreCliente)) return this.replica;
+        Donacion_I servidorReplica = getReplica("localhost", this.replica);
+        if (servidorReplica.existe(nombreCliente)) return this.replica;
 
         return "";
     }
 
-    // Comprueba si existe el cliente en clientesRegistrados
-    // Devuelve true si existe, false si no existe
     @Override
-    public boolean existeCliente(String nombreCliente) throws RemoteException {
+    public boolean existe(String nombreCliente) throws RemoteException {
         return clientesRegistrados.containsKey(nombreCliente);
     }
 
-    // Devuelve el numero de clientes registrados
     @Override
     public int getNumClientesRegistrados() throws RemoteException {
         return clientesRegistrados.size();
     }
 
-    // Comprueba que servidor esta el cliente registrado para buscar el subtotal del servidor
     @Override
     public float getSubtotalDonado(String nombreCliente) throws RemoteException {
         String servidorCliente = identificarCliente(nombreCliente);
         if (servidorCliente.equals(this.servidor)) {
             return getSubtotalDonado();
         } else if (servidorCliente.equals(this.replica)) {
-            Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
+            Donacion_I servidorReplica = getReplica("localhost", this.replica);
             return servidorReplica.getSubtotalDonado();
         }
         return 0.0f;
     }
 
-    // Devuelve el subtotaldonado
     @Override
     public float getSubtotalDonado()throws RemoteException {
         return this.subtotalDonado;
     }
     
-
-    // Introduce a un cliente en clientesRegistrados
     @Override
     public void confirmarRegistroCliente(String nombreCliente, String nombreServidor) throws RemoteException {
         clientesRegistrados.put(nombreCliente, new Cliente(nombreCliente));
         System.out.println("Cliente " + nombreCliente + " registrado en el servidor " + nombreServidor);
     }
 
-    // Devuelve una referencia a la replica del servidor, es una referencia a null si no se encuentra la replica
     @Override
-    public Donacion_I obtenerReplica(String host, String nombreReplica) throws RemoteException {
+    public Donacion_I getReplica(String host, String nombreReplica) throws RemoteException {
         Donacion_I servidorReplica = null;
 
         try {
@@ -126,27 +125,18 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
         return servidorReplica;
     }
 
-    // Devuelve el nombre del servidor
-    @Override
-    public String obtenerNombreServidor() throws RemoteException {
-        return this.servidor;
-    }
-
     // Incrementa el subtotal donado al servidor en una cantidad
     @Override
     public void incrementarSubtotalDonado(float donacion) throws RemoteException {
         this.subtotalDonado += donacion;
     }
 
-    // Comprueba si el nombre y password de un cliente son correctos entre servidores
-
-    // Obtiene la cantidad total donada por un cliente
     @Override
     public float getDonacionCliente(String nombreCliente) throws RemoteException {
         String nombreServidor = identificarCliente(nombreCliente);
 
         if(nombreServidor.equals(this.replica)){
-            Donacion_I servidorReplica = this.obtenerReplica("localhost", this.replica);
+            Donacion_I servidorReplica = this.getReplica("localhost", this.replica);
             Cliente cliente = servidorReplica.getClientesRegistrados().get(nombreCliente);
             return cliente.getTotal();   
         }else if(nombreServidor.equals(this.servidor)){
@@ -159,7 +149,7 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
     public Map<String, Cliente> getClientesRegistrados() {
         return clientesRegistrados;
     }
-    // Donar en el servidor correspondiente cuando ya se ha comprobado en que servidor esta el cliente
+    
     @Override
     public void donar(String nombreCliente, float donacion) throws RemoteException {
         String servidorCliente = identificarCliente(nombreCliente);
@@ -169,7 +159,7 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
             incrementarSubtotalDonado(donacion);
             System.out.println("El cliente " + nombreCliente + " ha donado " + donacion);
         } else if (servidorCliente.equals(this.replica)) {
-            Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
+            Donacion_I servidorReplica = getReplica("localhost", this.replica);
             servidorReplica.donar(nombreCliente, donacion);
         }
     }
@@ -177,13 +167,13 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
 
     @Override
     public float getTotalDonado() throws RemoteException {
-        Donacion_I servidorReplica = obtenerReplica("localhost", this.replica);
+        Donacion_I servidorReplica = getReplica("localhost", this.replica);
         return this.subtotalDonado + servidorReplica.getSubtotalDonado();
     }
 
     @Override
     public ArrayList<Cliente> getListaDonantes() throws RemoteException{
-        Donacion_I servidorReplica = this.obtenerReplica("localhost", this.replica);
+        Donacion_I servidorReplica = this.getReplica("localhost", this.replica);
         Map<String,Cliente> clientesReplica = servidorReplica.getClientesRegistrados();
 
         Map<String,Cliente> clientesServidor = this.getClientesRegistrados();

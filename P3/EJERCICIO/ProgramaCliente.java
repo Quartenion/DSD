@@ -23,36 +23,25 @@ public class ProgramaCliente {
 
     public static void imprimirMenuPrincipal() {
         System.out.println("=======================================");
-        System.out.println("         SISTEMA DE DONACIONES         ");
+        System.out.println("    -=+=-SISTEMA DE DONACIONES-=+=-    ");
         System.out.println("=======================================");
-        System.out.println("1 -> Registrarse");
-        System.out.println("2 -> Iniciar sesión");
-        System.out.println("3 -> Salir");
+        System.out.println("1) Registrarse");
+        System.out.println("2) Iniciar sesión");
+        System.out.println("3) Salir");
         System.out.println("=======================================");
     }
 
     public static void imprimirMenuOperaciones() {
         System.out.println("=======================================");
-        System.out.println("            MENÚ DE OPCIONES           ");
+        System.out.println("       -=+=-MENÚ DE OPCIONES-=+=-      ");
         System.out.println("=======================================");
-        System.out.println("1 -> Realizar una donación");
-        System.out.println("2 -> Consultar el total donado al servidor");
-        System.out.println("3 -> Consultar el total donado por el cliente");
-        System.out.println("4 -> Consultar total donado en ambos servidores");
-        System.out.println("5 -> Consultar la lista de donantes");
-        System.out.println("6 -> Salir");
+        System.out.println("1) Realizar una donación");
+        System.out.println("2) Consultar el total donado al servidor");
+        System.out.println("3) Consultar el total donado por el cliente");
+        System.out.println("4) Consultar total donado en ambos servidores");
+        System.out.println("5) Consultar la lista de donantes");
+        System.out.println("6) Salir");
         System.out.println("=======================================");
-    }
-
-    public static void imprimirHistorialDonaciones(String nombreCliente, ArrayList<Float> historial) {
-        if(historial.isEmpty()) {
-            System.out.println("El cliente " + nombreCliente + " no ha realizado ninguna donación.");
-        } else {
-            System.out.println("Historial de donaciones del cliente " + nombreCliente + ":");
-            for(int i = 0; i < historial.size(); i++) {
-                System.out.println("Donación " + (i+1) + ": " + historial.get(i));
-            }
-        }
     }
 
     public static void imprimirListadoDonantes(ArrayList<Cliente> Donantes){
@@ -71,6 +60,8 @@ public class ProgramaCliente {
         String nombreServidor = "servidorReplica";
         String cliente = "";
         float cantidad = 0.0f;
+        int seleccion = 0;
+        String nombreSeleccion = "";
         boolean sesionIniciada = false;
 
         if (System.getSecurityManager() == null) {
@@ -105,12 +96,25 @@ public class ProgramaCliente {
 
             switch (opcion) {
                 case 1:
+                    System.out.println("Seleccione el servidor al que desea registrarse:");
+                    System.out.println("1) Servidor Principal");
+                    System.out.println("2) Servidor Replica");
+                    seleccion = sc.nextInt();
+                    if (seleccion == 1) {
+                        nombreSeleccion = "servidor";
+                    } else if (seleccion == 2) {
+                        nombreSeleccion = "replica";
+                    } else {
+                        System.out.println("Opción no válida. Saliendo...");
+                        return;
+                    }
+
                     System.out.print("Introduzca el nombre: ");
                     cliente = sc.nextLine();
                     cliente = sc.nextLine();
                     if(servidor.registrado(cliente)) {
                         System.out.println("El nombre introducido ya está registrado.");
-                    } else if (servidor.registrar(cliente)) {
+                    } else if (servidor.registrar(cliente, nombreSeleccion)) {
                         System.out.println(cliente + " se ha registrado correctamente.");
                         sesionIniciada = true;
                     } else {
@@ -124,7 +128,7 @@ public class ProgramaCliente {
                     cliente = sc.nextLine();
                     cliente = sc.nextLine();
 
-                    if (servidor.inicioSesion(cliente)) {
+                    if (servidor.iniciarSesion(cliente)) {
                         System.out.println("Sesión iniciada correctamente.");
                         sesionIniciada = true;
                     } else {

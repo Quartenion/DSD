@@ -4,53 +4,51 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface Donacion_I extends Remote { 
-    // Comprueba si un cliente está registrado
-    boolean existeCliente(String nombreCliente) throws RemoteException;
+    // Comprueba si el cliente está registrado en este servidor
+    boolean existe(String nombreCliente) throws RemoteException;
 
-    // Verifica si el cliente está registrado en este servidor o en la réplica
+    // Comprueba si el cliente está registrado en este servidor o su réplica
     boolean registrado(String nombreCliente) throws RemoteException;
 
-    // Registra un cliente si no está registrado en ninguno de los servidores
-    boolean registrar(String nombreCliente) throws RemoteException;
+    // Registra al cliente en el servidor indicado si no está registrado
+    boolean registrar(String nombreCliente, String servidorDestino) throws RemoteException;
 
-    // Verifica si el cliente tiene sesión iniciada
-    Boolean inicioSesion(String nombreCliente) throws RemoteException;
+    // Comprueba si el cliente puede iniciar sesión
+    Boolean iniciarSesion(String nombreCliente) throws RemoteException;
 
-    // Identifica en qué servidor está registrado el cliente
+    // Devuelve el nombre del servidor donde está registrado el cliente
     String identificarCliente(String nombreCliente) throws RemoteException;
 
     // Devuelve el número de clientes registrados en este servidor
     int getNumClientesRegistrados() throws RemoteException;
 
-    // Confirma el registro de un cliente en un servidor
+    // Añade un cliente a la lista de registrados
     void confirmarRegistroCliente(String nombreCliente, String nombreServidor) throws RemoteException;
 
-    // Obtiene la referencia a la réplica del servidor
-    Donacion_I obtenerReplica(String host, String nombreReplica) throws RemoteException;
+    // Obtiene la referencia a la réplica
+    Donacion_I getReplica(String host, String nombreReplica) throws RemoteException;
 
-    // Devuelve el nombre del servidor
-    String obtenerNombreServidor() throws RemoteException;
-
-    // Incrementa el subtotal donado en este servidor
+    // Aumenta el subtotal donado en este servidor
     void incrementarSubtotalDonado(float donacion) throws RemoteException;
 
-    // Obtiene el subtotal total donado en este servidor
+    // Devuelve el total donado en este servidor
     float getSubtotalDonado() throws RemoteException;
 
-    // Obtiene el total donado a un cliente en este servidor
+    // Devuelve lo donado por un cliente (en el servidor correspondiente)
     float getDonacionCliente(String nombreCliente) throws RemoteException;
 
-    // Obtiene el total donado por un cliente en ambos servidores
+    // Devuelve el subtotal del servidor donde está el cliente
     float getSubtotalDonado(String nombreCliente) throws RemoteException;
 
-    // Obtiene el total donado en ambos servidores
+    // Devuelve el total donado entre este servidor y su réplica
     float getTotalDonado() throws RemoteException;
 
-    // Obtiene la lista de clientes que han hecho donaciones
+    // Devuelve los clientes que han donado
     ArrayList<Cliente> getListaDonantes() throws RemoteException;
 
-    // Realiza una donación por parte de un cliente
+    // Añade una donación a un cliente
     void donar(String nombreCliente, float donacion) throws RemoteException;
 
+    // Devuelve el mapa de clientes registrados en este servidor
     Map<String, Cliente> getClientesRegistrados() throws RemoteException;
 }

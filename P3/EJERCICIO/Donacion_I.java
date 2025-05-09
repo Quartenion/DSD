@@ -4,6 +4,19 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface Donacion_I extends Remote { 
+
+    // =============================
+    // -=+=-Gestión de Réplicas-=+=-
+    // =============================
+
+    // Obtiene la referencia a la réplica
+    Donacion_I getReplica(String host, String nombreReplica) throws RemoteException;
+
+
+    // =============================
+    // -=+=-Gestión de Clientes-=+=-
+    // =============================
+
     // Comprueba si el cliente está registrado en este servidor
     boolean existe(String nombreCliente) throws RemoteException;
 
@@ -12,6 +25,9 @@ public interface Donacion_I extends Remote {
 
     // Registra al cliente en el servidor indicado si no está registrado
     boolean registrar(String nombreCliente, String servidorDestino) throws RemoteException;
+
+    // Añade un cliente a la lista de registrados
+    void confirmarRegistroCliente(String nombreCliente, String nombreServidor) throws RemoteException;
 
     // Comprueba si el cliente puede iniciar sesión
     Boolean iniciarSesion(String nombreCliente) throws RemoteException;
@@ -22,11 +38,16 @@ public interface Donacion_I extends Remote {
     // Devuelve el número de clientes registrados en este servidor
     int getNumClientesRegistrados() throws RemoteException;
 
-    // Añade un cliente a la lista de registrados
-    void confirmarRegistroCliente(String nombreCliente, String nombreServidor) throws RemoteException;
+    // Devuelve el mapa de clientes registrados en este servidor
+    Map<String, Cliente> getClientesRegistrados() throws RemoteException;
 
-    // Obtiene la referencia a la réplica
-    Donacion_I getReplica(String host, String nombreReplica) throws RemoteException;
+
+    // ===============================
+    // -=+=-Gestión de Donaciones-=+=-
+    // ===============================
+
+    // Añade una donación a un cliente
+    void donar(String nombreCliente, float donacion) throws RemoteException;
 
     // Aumenta el subtotal donado en este servidor
     void incrementarSubtotalDonado(float donacion) throws RemoteException;
@@ -45,10 +66,4 @@ public interface Donacion_I extends Remote {
 
     // Devuelve los clientes que han donado
     ArrayList<Cliente> getListaDonantes() throws RemoteException;
-
-    // Añade una donación a un cliente
-    void donar(String nombreCliente, float donacion) throws RemoteException;
-
-    // Devuelve el mapa de clientes registrados en este servidor
-    Map<String, Cliente> getClientesRegistrados() throws RemoteException;
 }

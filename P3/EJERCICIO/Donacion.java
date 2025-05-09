@@ -12,7 +12,7 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
     private String servidorPrincipal;
     private String nombreReplica;
     private float totalLocalDonado;
-    private Map<String, Cliente> baseClientes;
+    private Map<String, Entidad> baseClientes;
 
     public Donacion(String servidorPrincipal, String nombreReplica) throws RemoteException {
         this.servidorPrincipal = servidorPrincipal;
@@ -79,7 +79,7 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
 
     @Override
     public void confirmarRegistro(String cliente, String nombreServidor) throws RemoteException {
-        baseClientes.put(cliente, new Cliente(cliente));
+        baseClientes.put(cliente, new Entidad(cliente));
         System.out.println("Cliente '" + cliente + "' registrado en: " + nombreServidor);
     }
 
@@ -115,7 +115,7 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
     }
 
     @Override
-    public Map<String, Cliente> getClientesRegistrados() {
+    public Map<String, Entidad> getClientesRegistrados() {
         return baseClientes;
     }
 
@@ -128,7 +128,7 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
     public void donar(String cliente, float monto) throws RemoteException {
         String ubicacion = ubicarServidorCliente(cliente);
         if (ubicacion.equals(servidorPrincipal)) {
-            Cliente c = baseClientes.get(cliente);
+            Entidad c = baseClientes.get(cliente);
             if (c != null) {
                 c.donar(monto);
                 sumarDonacionLocal(monto);
@@ -163,11 +163,11 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
         if (origen.equals(nombreReplica)) {
             Donacion_I replica = getServidorRemoto("localhost", nombreReplica);
             if (replica != null) {
-                Cliente c = replica.getClientesRegistrados().get(cliente);
+                Entidad c = replica.getClientesRegistrados().get(cliente);
                 return c != null ? c.getTotal() : 0;
             }
         } else if (origen.equals(servidorPrincipal)) {
-            Cliente c = baseClientes.get(cliente);
+            Entidad c = baseClientes.get(cliente);
             return c != null ? c.getTotal() : 0;
         }
 
@@ -194,10 +194,10 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
     }
 
     @Override
-    public ArrayList<Cliente> getListaDonantes() throws RemoteException {
-        ArrayList<Cliente> donantes = new ArrayList<>();
+    public ArrayList<Entidad> getListaDonantes() throws RemoteException {
+        ArrayList<Entidad> donantes = new ArrayList<>();
 
-        for (Cliente c : baseClientes.values()) {
+        for (Entidad c : baseClientes.values()) {
             if (c.getNumDonaciones() > 0) {
                 donantes.add(c);
             }
@@ -205,7 +205,7 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
 
         Donacion_I replica = getServidorRemoto("localhost", nombreReplica);
         if (replica != null) {
-            for (Cliente c : replica.getClientesRegistrados().values()) {
+            for (Entidad c : replica.getClientesRegistrados().values()) {
                 if (c.getNumDonaciones() > 0) {
                     donantes.add(c);
                 }

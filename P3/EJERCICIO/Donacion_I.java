@@ -39,7 +39,7 @@ public interface Donacion_I extends Remote {
     int getNumClientesRegistrados() throws RemoteException;
 
     // Devuelve el mapa de clientes registrados en este servidor
-    Map<String, Cliente> getClientesRegistrados() throws RemoteException;
+    Map<String, Entidad> getClientesRegistrados() throws RemoteException;
 
 
     // ===============================
@@ -65,5 +65,5 @@ public interface Donacion_I extends Remote {
     float getTotalDonado() throws RemoteException;
 
     // Devuelve los clientes que han donado
-    ArrayList<Cliente> getListaDonantes() throws RemoteException;
+    ArrayList<Entidad> getListaDonantes() throws RemoteException;
 }

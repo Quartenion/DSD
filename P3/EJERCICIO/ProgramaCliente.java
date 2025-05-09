@@ -167,10 +167,17 @@ public class ProgramaCliente {
                     case 1:
                         System.out.print("Introduzca la cantidad a donar: ");
                         cantidad = sc.nextFloat();
-                        servidor.donar(cliente, cantidad);
-                        System.out.println(cliente + " ha donado " + cantidad + " al servidor.");
-                        pausar();
-                        break;
+                        if (cantidad > 0) {
+                            servidor.donar(cliente, cantidad);
+                            System.out.println(cliente + " ha donado " + cantidad + " al servidor.");
+                            pausar();
+                            break;
+                        }
+                        else {
+                            System.out.println("La cantidad a donar debe ser mayor que 0.");
+                            pausar();
+                            break;
+                        }
 
                     case 2:
                         System.out.println("Total donado al servidor: " + servidor.getSubtotalDonado(cliente));

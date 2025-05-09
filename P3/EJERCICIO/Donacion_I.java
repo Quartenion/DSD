@@ -27,7 +27,7 @@ public interface Donacion_I extends Remote {
     boolean registrar(String nombreCliente, String servidorDestino) throws RemoteException;
 
     // Añade un cliente a la lista de registrados
-    void confirmarRegistroCliente(String nombreCliente, String nombreServidor) throws RemoteException;
+    void confirmarRegistro(String nombreCliente, String nombreServidor) throws RemoteException;
 
     // Comprueba si el cliente puede iniciar sesión
     Boolean iniciarSesion(String nombreCliente) throws RemoteException;

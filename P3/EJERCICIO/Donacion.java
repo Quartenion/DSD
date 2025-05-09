@@ -49,6 +49,7 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
             servidorReplica.confirmarRegistroCliente(nombreCliente, this.replica);
         } else {
             System.out.println("Servidor de destino no válido.");
+            System.out.println(this.replica + " : " + servidorDestino);
             return false;
         }
 

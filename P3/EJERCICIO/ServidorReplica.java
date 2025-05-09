@@ -12,7 +12,7 @@ public class ServidorReplica {
         }
 
         try {
-            String nombreServidor = "servidorReplica";
+            String nombreServidor = "replica";
             String nombreReplica = "servidor";
             Registry reg=LocateRegistry.createRegistry(1098);
             Donacion_I donacionesReplica = new Donacion(nombreServidor, nombreReplica);

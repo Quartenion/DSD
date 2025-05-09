@@ -13,7 +13,7 @@ public class Servidor {
 
         try {
             String nombreServidor = "servidor";
-            String nombreReplica = "servidorReplica";
+            String nombreReplica = "replica";
             Registry reg=LocateRegistry.createRegistry(1099);
             Donacion_I donacionesServidor = new Donacion(nombreServidor, nombreReplica);
             Naming.rebind(nombreServidor, donacionesServidor);

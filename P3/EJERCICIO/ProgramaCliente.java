@@ -57,7 +57,7 @@ public class ProgramaCliente {
 
     public static void main(String[] args) {
         String host = "localhost";
-        String nombreServidor = "servidorReplica";
+        String nombreServidor = "replica";
         String cliente = "";
         float cantidad = 0.0f;
         int seleccion = 0;

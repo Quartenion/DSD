@@ -1,45 +1,35 @@
-import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.ArrayList;
 
-// Clase utilizada para representar a los clientes
-public class Cliente implements Serializable{
-    private String nombre;
-    private ArrayList<Float> donaciones;
-    private float donacionTotal;
-    private int numeroDonaciones;
+public class Cliente implements Serializable {
+    private final String nombre;
+    private final ArrayList<Float> donaciones = new ArrayList<>();
+    private float donacionTotal = 0.0f;
+    private int numeroDonaciones = 0;
 
-    Cliente(String nombre)
-    {
+    Cliente(String nombre) {
         this.nombre = nombre;
-        this.donaciones = new ArrayList<>();
-        this.donacionTotal = 0.0f;
-        this.numeroDonaciones = 0;
     }
 
-    public float getTotal()
-    {
+    public float getTotal() {
         return donacionTotal;
     }
 
-    public int getNumDonaciones()
-    {
+    public int getNumDonaciones() {
         return numeroDonaciones;
     }
 
-    public String getNombre()
-    {
+    public String getNombre() {
         return nombre;
     }
 
-    public void donar(float donacion)
-    {
-        this.donaciones.add(donacion);
-        this.donacionTotal += donacion;
-        this.incrementarNumeroDonaciones();
+    public void donar(float donacion) {
+        donaciones.add(donacion);
+        donacionTotal += donacion;
+        incrementarDonaciones();
     }
 
-    public void incrementarNumeroDonaciones()
-    {
-        this.numeroDonaciones++;
+    public void incrementarDonaciones() {
+        numeroDonaciones++;
     }
 }

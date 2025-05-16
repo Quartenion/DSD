@@ -10,8 +10,7 @@ class ServidorTrigonometricoHandler:
     def seno(self, angulo):
         print(f"Calculando seno({angulo})")
         resultado = math.sin(math.radians(angulo))
-        # Redondear el resultado para evitar pequeños errores de precisión
-        return round(resultado, 10)  # Redondea a 10 decimales
+        return round(resultado, 10)  
     
     def coseno(self, angulo):
         print(f"Calculando coseno({angulo})")
@@ -26,7 +25,7 @@ class ServidorTrigonometricoHandler:
 if __name__ == "__main__":
     handler = ServidorTrigonometricoHandler()
     processor = Calculadora.Processor(handler)
-    transport = TSocket.TServerSocket(host="127.0.0.1", port=9091)  # Puerto diferente al servidor principal
+    transport = TSocket.TServerSocket(host="127.0.0.1", port=9091)  
     tfactory = TTransport.TBufferedTransportFactory()
     pfactory = TBinaryProtocol.TBinaryProtocolFactory()
 

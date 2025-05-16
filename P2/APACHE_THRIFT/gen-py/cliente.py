@@ -21,16 +21,9 @@ def leer_entero(mensaje):
             print("POR FAVOR, INTRODUZCA UN NÚMERO VÁLIDO")
 
 def imprimir_matriz(matriz):
-    """Imprime la matriz en formato legible."""
     for fila in matriz:
         print("  ".join(f"{elem:.2f}" for elem in fila))
-    print()  # Espacio extra para separación
-
-def leer_vector():
-    """Leer un vector de tamaño fijo (puedes adaptarlo si necesitas más flexibilidad)."""
-    tamano = leer_entero("Ingrese el tamaño del vector: ")
-    vector = [leer_entero(f"Ingrese el elemento {i+1} del vector: ") for i in range(tamano)]
-    return vector
+    print() 
 
 while True:
     os.system('clear')
@@ -244,7 +237,7 @@ while True:
                 expresion = input("Ingrese la expresión aritmética: ")
 
                 try:
-                    # Intentamos evaluar la expresión de manera segura
+                    
                     resultado = client.evaluar_expresion(expresion)
                     print(f"Resultado de la expresión: {resultado}")
                 except Exception as e:

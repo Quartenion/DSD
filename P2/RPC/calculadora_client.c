@@ -1,20 +1,9 @@
 #include "calculadora.h"
-
-
 #include <stdio.h>
-
-
 #include <stdlib.h>
-
-
 #include <string.h>
-
-
 #include <ctype.h>
-
-
 #define MAX_EXPRESION 256
-
 
 void leer_matriz(matriz * m, char nombre) {
  printf("Ingrese las dimensiones de la matriz %c (filas columnas): ", nombre);

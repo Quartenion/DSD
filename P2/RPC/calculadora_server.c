@@ -134,11 +134,7 @@ resultado_matriz *
     }
     return & result;
   }
-resultado_matriz *
-  transpuesta_matriz_1_svc(matriz arg1, struct svc_req * rqstp) {
-    static resultado_matriz result;
-    return & result;
-  }
+  
 double * operacion_compuesta_1_svc(expresion arg1, struct svc_req * rqstp) {
   static double result;
   double acumulador = 0, actual = 0;

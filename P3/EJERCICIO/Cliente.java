@@ -16,7 +16,7 @@ public class Cliente {
     public static void pausar() {
         System.out.println("\nPulse ENTER para continuar...");
         try {
-            System.in.read(); // para capturar el salto de línea
+            System.in.read(); 
         } catch (Exception e) {}
         limpiarPantalla();
     }

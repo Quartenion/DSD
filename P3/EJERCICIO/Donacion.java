@@ -53,10 +53,11 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
 
     @Override
     public boolean registrar(String cliente, String destinoServidor) throws RemoteException {
-        if (existe(cliente)) return false;
 
         Donacion_I replica = getServidorRemoto("localhost", nombreReplica);
-        if (replica != null && replica.existe(cliente)) return false;
+        if (replica.registrado(cliente)) {
+            return false;
+        }
 
         if (destinoServidor.equals(servidorPrincipal)) {
             confirmarRegistro(cliente, servidorPrincipal);
@@ -91,11 +92,7 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
     }
 
     @Override
-    public String identificarCliente(String cliente) throws RemoteException {
-        return ubicarServidorCliente(cliente);
-    }
-
-    private String ubicarServidorCliente(String cliente) throws RemoteException {
+    public String ubicarServidorCliente(String cliente) throws RemoteException {
         if (existe(cliente)) return servidorPrincipal;
 
         Donacion_I replica = getServidorRemoto("localhost", nombreReplica);

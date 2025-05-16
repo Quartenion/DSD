@@ -134,7 +134,7 @@ resultado_matriz *
     }
     return & result;
   }
-  
+
 double * operacion_compuesta_1_svc(expresion arg1, struct svc_req * rqstp) {
   static double result;
   double acumulador = 0, actual = 0;
@@ -148,7 +148,7 @@ double * operacion_compuesta_1_svc(expresion arg1, struct svc_req * rqstp) {
     if (isdigit( * token) || * token == '.') {
       char * endptr;
       actual = strtod(token, & endptr);
-      token = endptr; //siguiente carácter no numérico
+      token = endptr; 
       if (operador == '+') acumulador += actual;
       else if (operador == '-') acumulador -= actual;
       else if (operador == '*') acumulador *= actual;

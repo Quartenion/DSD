@@ -33,7 +33,7 @@ public interface Donacion_I extends Remote {
     Boolean iniciarSesion(String nombreCliente) throws RemoteException;
 
     // Devuelve el nombre del servidor donde está registrado el cliente
-    String identificarCliente(String nombreCliente) throws RemoteException;
+    String ubicarServidorCliente(String cliente) throws RemoteException;
 
     // Devuelve el número de clientes registrados en este servidor
     int getNumClientesRegistrados() throws RemoteException;

@@ -10,7 +10,7 @@ public interface Donacion_I extends Remote {
     // =============================
 
     // Obtiene la referencia a la réplica
-    Donacion_I getReplica(String host, String nombreReplica) throws RemoteException;
+    Donacion_I getServidorRemoto(String host, String nombreServidor) throws RemoteException;
 
 
     // =============================

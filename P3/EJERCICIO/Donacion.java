@@ -25,7 +25,8 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
     // -=+=-Gestión de Réplicas-=+=-
     // =============================
 
-    private Donacion_I getServidorRemoto(String host, String nombreServidor) throws RemoteException {
+    @Override
+    public Donacion_I getServidorRemoto(String host, String nombreServidor) throws RemoteException {
         try {
             Registry registro = LocateRegistry.getRegistry(host, 1099);
             return (Donacion_I) registro.lookup(nombreServidor);
@@ -34,12 +35,6 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
             return null;
         }
     }
-
-    @Override
-    public Donacion_I getReplica(String host, String nombreReplica) throws RemoteException {
-        return getServidorRemoto(host, nombreReplica);
-    }
-
 
     // =============================
     // -=+=-Gestión de Clientes-=+=-
@@ -131,7 +126,7 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
             Entidad c = baseClientes.get(cliente);
             if (c != null) {
                 c.donar(monto);
-                sumarDonacionLocal(monto);
+                incrementarSubtotalDonado(monto);
                 System.out.println("Cliente '" + cliente + "' donó: " + monto);
             }
         } else if (ubicacion.equals(nombreReplica)) {
@@ -144,10 +139,6 @@ public class Donacion extends UnicastRemoteObject implements Donacion_I {
 
     @Override
     public void incrementarSubtotalDonado(float monto) throws RemoteException {
-        sumarDonacionLocal(monto);
-    }
-
-    private void sumarDonacionLocal(float monto) {
         totalLocalDonado += monto;
     }
 

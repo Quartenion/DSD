@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Usuario - Sistema Domótico</title>
+  <style>
+    .alerta {
+        color: red;
+        transition: opacity 1s ease-out;
+        opacity: 1;
+    }
+
+    .alerta.fade-out {
+        opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <h2>Estado del sistema</h2>
+
+  <div>
+    <strong>Temperatura:</strong> <span id="tempValor">--</span> °C<br>
+    <strong>Luminosidad:</strong> <span id="luzValor">--</span>
+  </div>
+
+  <h3>Actuadores</h3>
+  <div>
+    <strong>Persiana:</strong> <span id="persianaEstado">--</span><br>
+    <strong>Aire Acondicionado:</strong> <span id="aireEstado">--</span>
+  </div>
+
+  <h3>Control manual</h3>
+  <button onclick="controlar('persiana', 'abierta')">Abrir persiana</button>
+  <button onclick="controlar('persiana', 'cerrada')">Cerrar persiana</button><br><br>
+  <button onclick="controlar('aire', 'encendido')">Encender A/C</button>
+  <button onclick="controlar('aire', 'apagado')">Apagar A/C</button>
+
+  <h3>Notificaciones</h3>
+  <div id="notificaciones"></div>
+
+  <h3>Historial de eventos</h3>
+  <ul id="historial"></ul>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    // Actualizar sensores
+    socket.on('actualizar-sensores', ({ tipo, valor }) => {
+      if (tipo === 'temperatura') {
+        document.getElementById('tempValor').textContent = valor;
+      } else if (tipo === 'luminosidad') {
+        document.getElementById('luzValor').textContent = valor;
+      }
+    });
+
+    // Actualizar actuadores
+    socket.on('actualizar-actuadores', (estado) => {
+      document.getElementById('persianaEstado').textContent = estado.persiana;
+      document.getElementById('aireEstado').textContent = estado.aire;
+    });
+
+    // Recibir alarmas
+    socket.on('alarma', (mensaje) => {
+        const zona = document.getElementById('notificaciones');
+        const alerta = document.createElement('p');
+        alerta.textContent = mensaje;
+        alerta.classList.add('alerta');
+
+        zona.appendChild(alerta);
+
+        // Aplicar la clase de difuminado después de unos segundos
+        setTimeout(() => {
+            alerta.classList.add('fade-out');
+        }, 3000); // Empieza a desvanecerse después de 3s
+
+        // Eliminar del DOM 1 segundo después del difuminado
+        setTimeout(() => {
+            zona.removeChild(alerta);
+        }, 5000);
+    });
+
+
+
+    // Estado inicial al conectar
+    socket.on('estado-inicial', (estado) => {
+      document.getElementById('tempValor').textContent = estado.sensores.temperatura ?? '--';
+      document.getElementById('luzValor').textContent = estado.sensores.luminosidad ?? '--';
+      document.getElementById('persianaEstado').textContent = estado.actuadores.persiana;
+      document.getElementById('aireEstado').textContent = estado.actuadores.aire;
+    });
+
+    // Mostrar historial de eventos
+    socket.on('historial', (eventos) => {
+        const lista = document.getElementById('historial');
+        lista.innerHTML = '';
+        eventos.forEach(evt => {
+            const item = document.createElement('li');
+            const fecha = new Date(evt.timestamp).toLocaleString();
+            item.textContent = `[${fecha}] ${evt.tipo}: ${evt.valor}`;
+            lista.appendChild(item);
+        });
+    });
+
+    // Enviar control manual
+    function controlar(dispositivo, estado) {
+      socket.emit('control-actuador', { dispositivo, estado });
+    }
+  </script>
+</body>
+</html>

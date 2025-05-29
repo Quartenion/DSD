@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Sensores - Simulación</title>
+</head>
+<body>
+  <h2>Simular sensores</h2>
+  <form id="formSensores">
+    <label for="temperatura">Temperatura (°C):</label>
+    <input type="number" id="temperatura" step="0.1"><br><br>
+
+    <label for="luminosidad">Luminosidad:</label>
+    <input type="number" id="luminosidad" step="1"><br><br>
+
+    <button type="submit">Enviar medidas</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const form = document.getElementById('formSensores');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const temperatura = parseFloat(document.getElementById('temperatura').value);
+      const luminosidad = parseFloat(document.getElementById('luminosidad').value);
+
+      if (!isNaN(temperatura)) {
+        socket.emit('nueva-medida', { tipo: 'temperatura', valor: temperatura });
+      }
+
+      if (!isNaN(luminosidad)) {
+        socket.emit('nueva-medida', { tipo: 'luminosidad', valor: luminosidad });
+      }
+
+      form.reset();
+    });
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 // Definición de umbrales permitidos para sensores
 const UMBRALES = {
-  temperaturaAire: { min: 19, max: 36 },     
+  temperaturaAire: { min: 19, max: 30 },     
   temperaturaCalor: { min: 13, max: 18 },
   luminosidad: { min: 50, max: 70 },      
   humedad: { min: 30, max: 70 } 
@@ -53,6 +53,16 @@ export function procesarMedida(tipo, valor, estado) {
         tipo: 'actuador',
         valor: { dispositivo: 'aire', estado: 'encendido' }
       });
+      if(actuadores.ventana !== 'cerrada') {
+        acciones.push({
+          tipo: 'alarma',
+          mensaje: '¡La ventana está abierta y el aire está encendido! Cerrando ventana automáticamente.'
+        });
+        acciones.push({
+          tipo: 'actuador',
+          valor: { dispositivo: 'ventana', estado: 'cerrada' }
+        });
+      }
     }
 
     if (valor < UMBRALES.temperaturaCalor.min && actuadores.calor !== 'encendida') {
@@ -64,6 +74,16 @@ export function procesarMedida(tipo, valor, estado) {
         tipo: 'actuador',
         valor: { dispositivo: 'calor', estado: 'encendida' }
       });
+      if(actuadores.ventana !== 'cerrada') {
+        acciones.push({
+          tipo: 'alarma',
+          mensaje: '¡La ventana está abierta y la calefacción está encendida! Cerrando ventana automáticamente.'
+        });
+        acciones.push({
+          tipo: 'actuador',
+          valor: { dispositivo: 'ventana', estado: 'cerrada' }
+        });
+      }
     } else if (valor > UMBRALES.temperaturaCalor.max && actuadores.calor !== 'apagada') {
       acciones.push({
         tipo: 'alarma',
@@ -120,7 +140,7 @@ export function procesarMedida(tipo, valor, estado) {
           valor: { dispositivo: 'riegue', estado: 'apagado' }
         });
       }
-    } else if (!valor && actuadores.ventana !== 'abierta') {
+    } else if (!valor && actuadores.ventana !== 'abierta' && actuadores.aire !== 'encendido' && actuadores.calor !== 'encendida') {
       acciones.push({
         tipo: 'alarma',
         mensaje: '¡No está lloviendo! Abriendo ventana automáticamente.'

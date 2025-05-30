@@ -51,7 +51,7 @@ export function procesarMedida(tipo, valor, estado) {
         tipo: 'actuador',
         valor: { dispositivo: 'aire', estado: 'encendido' }
       });
-      if(actuadores.ventana !== 'cerrada') {
+      if (actuadores.ventana !== 'cerrada') {
         acciones.push({
           tipo: 'alarma',
           mensaje: '¡La ventana está abierta y el aire está encendido! Cerrando ventana automáticamente.'
@@ -72,7 +72,7 @@ export function procesarMedida(tipo, valor, estado) {
         tipo: 'actuador',
         valor: { dispositivo: 'calor', estado: 'encendida' }
       });
-      if(actuadores.ventana !== 'cerrada') {
+      if (actuadores.ventana !== 'cerrada') {
         acciones.push({
           tipo: 'alarma',
           mensaje: '¡La ventana está abierta y la calefacción está encendida! Cerrando ventana automáticamente.'
@@ -113,15 +113,6 @@ export function procesarMedida(tipo, valor, estado) {
         tipo: 'actuador',
         valor: { dispositivo: 'riegue', estado: 'apagado' }
       });
-    } else if (sensores.lluvia && actuadores.riegue !== 'apagado') {
-      acciones.push({
-        tipo: 'alarma',
-        mensaje: '¡Está lloviendo! Apagando riego automáticamente.'
-      });
-      acciones.push({
-        tipo: 'actuador',
-        valor: { dispositivo: 'riegue', estado: 'apagado' }
-      });
     }
   }
 
@@ -135,17 +126,18 @@ export function procesarMedida(tipo, valor, estado) {
         tipo: 'actuador',
         valor: { dispositivo: 'ventana', estado: 'cerrada' }
       });
-      if (actuadores.riegue !== 'apagado') {
-        acciones.push({
-          tipo: 'alarma',
-          mensaje: '¡Está lloviendo! Apagando riego automáticamente.'
-        });
-        acciones.push({
-          tipo: 'actuador',
-          valor: { dispositivo: 'riegue', estado: 'apagado' }
-        });
-      }
-    } 
+    }
+
+    if (valor && actuadores.riegue !== 'apagado') {
+      acciones.push({
+        tipo: 'alarma',
+        mensaje: '¡Está lloviendo! Apagando riego automáticamente.'
+      });
+      acciones.push({
+        tipo: 'actuador',
+        valor: { dispositivo: 'riegue', estado: 'apagado' }
+      });
+    }
 
     if (!valor && actuadores.ventana !== 'abierta' && actuadores.aire !== 'encendido' && actuadores.calor !== 'encendida') {
       acciones.push({
@@ -158,7 +150,7 @@ export function procesarMedida(tipo, valor, estado) {
       });
     }
 
-    if (!valor && actuadores.riegue !== 'encendido' && estado.sensores.humedad < UMBRALES.humedad.min) {
+    if (!valor && actuadores.riegue !== 'encendido' && sensores.humedad < UMBRALES.humedad.min) {
       acciones.push({
         tipo: 'alarma',
         mensaje: '¡No está lloviendo! Encendiendo riego automáticamente.'

@@ -1,5 +1,5 @@
-const socket = io(); // Se conecta al servidor WebSocket
-const form = document.getElementById('formSensores'); // Referencia al formulario
+const socket = io(); 
+const form = document.getElementById('formSensores'); 
 
 // Evento al enviar el formulario
 form.addEventListener('submit', (e) => {
@@ -11,17 +11,17 @@ form.addEventListener('submit', (e) => {
   const humedad = parseFloat(document.getElementById('humedad').value);
   const lluvia = document.getElementById('lluvia').checked; 
 
-  // Enviar temperatura si es válida
+  // Enviar temperatura 
   if (!isNaN(temperatura)) {
     socket.emit('nueva-medida', { tipo: 'temperatura', valor: temperatura });
   }
 
-  // Enviar luminosidad si es válida
+  // Enviar luminosidad
   if (!isNaN(luminosidad)) {
     socket.emit('nueva-medida', { tipo: 'luminosidad', valor: luminosidad });
   }
 
-  // Enviar humedad si es válida
+  // Enviar humedad 
   if (!isNaN(humedad)) {
     socket.emit('nueva-medida', { tipo: 'humedad', valor: humedad });
   }

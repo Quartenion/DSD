@@ -28,14 +28,13 @@ const server = http.createServer((req, res) => {
     file = 'sensores.js';
     contentType = 'application/javascript';
   } else if (req.url.endsWith('.png')) {
-    file = req.url.slice(1); // elimina el "/" inicial
+    file = req.url.slice(1);
     contentType = 'image/png';
   } else {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('Página no encontrada');
+    res.end('Pagina no encontrada');
     return;
   }
-
 
   // Leer y servir el archivo solicitado
   readFile(join(process.cwd(), file), (err, data) => {
@@ -58,10 +57,11 @@ let estado = {
   actuadores: { persiana: 'cerrada', aire: 'apagado', calor: 'apagado', ventana: 'cerrada', riegue: 'apagado' },
 };
 
-// Conexiones WebSocket
+// Conexiones 
 io.on('connection', (socket) => {
   console.log('Nuevo cliente conectado');
 
+  // Enviar estado inicial y historial al cliente
   socket.emit('estado-inicial', estado);
   obtenerHistorial().then(eventos => {
     socket.emit('historial', eventos);

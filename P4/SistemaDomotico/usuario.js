@@ -78,12 +78,12 @@ socket.on('alarma', (mensaje) => {
 
   zona.appendChild(alerta);
 
-  // Espera 3 segundos antes de empezar a desvanecer el mensaje
+  // Espera 9 segundos antes de empezar a desvanecer el mensaje
   setTimeout(() => {
     alerta.classList.add('fade-out');
   }, 9000);
 
-  // Espera 2 segundos más (5 segundos en total) y lo elimina del DOM
+  // Espera 10 segundos antes de eliminar el mensaje del DOM
   setTimeout(() => {
     zona.removeChild(alerta);
   }, 10000);

@@ -1,17 +1,18 @@
 // Definición de umbrales permitidos para sensores
 const UMBRALES = {
-  temperaturaAire: { min: 19, max: 36 },     // Rango aceptable de temperatura en °C
+  temperaturaAire: { min: 19, max: 36 },     
   temperaturaCalor: { min: 13, max: 18 },
-  luminosidad: { min: 50, max: 70 }      // Rango aceptable de luminosidad (unidad arbitraria)
+  luminosidad: { min: 50, max: 70 },      
+  humedad: { min: 30, max: 70 } 
 };
 
-export function procesarMedida(tipo, valor, estadoActual) {
-  const acciones = []; // Lista de acciones a devolver
+export function procesarMedida(tipo, valor, estado) {
+  const acciones = [];
+  const { actuadores, sensores } = estado;
 
   // Lógica para luminosidad
   if (tipo === 'luminosidad') {
-    // Si la luminosidad es demasiado alta y la persiana no está cerrada, se actúa
-    if (valor > UMBRALES.luminosidad.max && estadoActual.persiana !== 'cerrada') {
+    if (valor > UMBRALES.luminosidad.max && actuadores.persiana !== 'cerrada') {
       acciones.push({
         tipo: 'alarma',
         mensaje: '¡Luminosidad demasiado alta! Cerrando persiana automáticamente.'
@@ -20,9 +21,7 @@ export function procesarMedida(tipo, valor, estadoActual) {
         tipo: 'actuador',
         valor: { dispositivo: 'persiana', estado: 'cerrada' }
       });
-    }
-    // Si la luminosidad es demasiado baja y la persiana no está abierta, se actúa
-    else if (valor < UMBRALES.luminosidad.min && estadoActual.persiana !== 'abierta') {
+    } else if (valor < UMBRALES.luminosidad.min && actuadores.persiana !== 'abierta') {
       acciones.push({
         tipo: 'alarma',
         mensaje: '¡Luminosidad demasiado baja! Subiendo persiana automáticamente.'
@@ -36,8 +35,7 @@ export function procesarMedida(tipo, valor, estadoActual) {
 
   // Lógica para temperatura
   if (tipo === 'temperatura') {
-    // Si la temperatura es muy baja y el aire aún está encendido, se apaga
-    if (valor < UMBRALES.temperaturaAire.min && estadoActual.aire !== 'apagado') {
+    if (valor < UMBRALES.temperaturaAire.min && actuadores.aire !== 'apagado') {
       acciones.push({
         tipo: 'alarma',
         mensaje: '¡Temperatura demasiado baja! Apagando aire acondicionado.'
@@ -46,9 +44,7 @@ export function procesarMedida(tipo, valor, estadoActual) {
         tipo: 'actuador',
         valor: { dispositivo: 'aire', estado: 'apagado' }
       });
-    }
-    // Si la temperatura es muy alta y el aire aún no está encendido, se enciende
-    else if (valor > UMBRALES.temperaturaAire.max && estadoActual.aire !== 'encendido') {
+    } else if (valor > UMBRALES.temperaturaAire.max && actuadores.aire !== 'encendido') {
       acciones.push({
         tipo: 'alarma',
         mensaje: '¡Temperatura muy alta! Encendiendo aire acondicionado.'
@@ -58,7 +54,8 @@ export function procesarMedida(tipo, valor, estadoActual) {
         valor: { dispositivo: 'aire', estado: 'encendido' }
       });
     }
-    if (valor < UMBRALES.temperaturaCalor.min && estadoActual.calor !== 'encendida') {
+
+    if (valor < UMBRALES.temperaturaCalor.min && actuadores.calor !== 'encendida') {
       acciones.push({
         tipo: 'alarma',
         mensaje: '¡Temperatura demasiado baja! Encendiendo calefacción.'
@@ -67,8 +64,7 @@ export function procesarMedida(tipo, valor, estadoActual) {
         tipo: 'actuador',
         valor: { dispositivo: 'calor', estado: 'encendida' }
       });
-    }
-    else if (valor > UMBRALES.temperaturaCalor.max && estadoActual.calor !== 'apagada') {
+    } else if (valor > UMBRALES.temperaturaCalor.max && actuadores.calor !== 'apagada') {
       acciones.push({
         tipo: 'alarma',
         mensaje: '¡Temperatura demasiado alta! Apagando calefacción.'
@@ -79,6 +75,62 @@ export function procesarMedida(tipo, valor, estadoActual) {
       });
     }
   }
-  // Devuelve todas las acciones sugeridas por el agente
+
+  // Lógica para humedad (bloquea si está lloviendo)
+  if (tipo === 'humedad') {
+    if (valor < UMBRALES.humedad.min && actuadores.riegue !== 'encendido' && !sensores.lluvia) {
+      acciones.push({
+        tipo: 'alarma',
+        mensaje: '¡Humedad demasiado baja! Encendiendo riego.'
+      });
+      acciones.push({
+        tipo: 'actuador',
+        valor: { dispositivo: 'riegue', estado: 'encendido' }
+      });
+    } else if (valor > UMBRALES.humedad.max && actuadores.riegue !== 'apagado') {
+      acciones.push({
+        tipo: 'alarma',
+        mensaje: '¡Humedad demasiado alta! Apagando riego.'
+      });
+      acciones.push({
+        tipo: 'actuador',
+        valor: { dispositivo: 'riegue', estado: 'apagado' }
+      });
+    }
+  }
+
+  // Lógica para lluvia
+  if (tipo === 'lluvia') {
+    if (valor && actuadores.ventana !== 'cerrada') {
+      acciones.push({
+        tipo: 'alarma',
+        mensaje: '¡Está lloviendo! Cerrando ventana automáticamente.'
+      });
+      acciones.push({
+        tipo: 'actuador',
+        valor: { dispositivo: 'ventana', estado: 'cerrada' }
+      });
+      if (actuadores.riegue !== 'apagado') {
+        acciones.push({
+          tipo: 'alarma',
+          mensaje: '¡Está lloviendo! Apagando riego automáticamente.'
+        });
+        acciones.push({
+          tipo: 'actuador',
+          valor: { dispositivo: 'riegue', estado: 'apagado' }
+        });
+      }
+    } else if (!valor && actuadores.ventana !== 'abierta') {
+      acciones.push({
+        tipo: 'alarma',
+        mensaje: '¡No está lloviendo! Abriendo ventana automáticamente.'
+      });
+      acciones.push({
+        tipo: 'actuador',
+        valor: { dispositivo: 'ventana', estado: 'abierta' }
+      });
+    }
+  }
+
   return acciones;
 }

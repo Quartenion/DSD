@@ -54,8 +54,8 @@ const io = new Server(server);
 
 // Estado inicial del sistema
 let estado = {
-  sensores: { temperatura: null, luminosidad: null },
-  actuadores: { persiana: 'abierta', aire: 'apagado', calor: 'apagado' },
+  sensores: { temperatura: null, luminosidad: null, humedad: null, lluvia: false },
+  actuadores: { persiana: 'cerrada', aire: 'apagado', calor: 'apagado', ventana: 'cerrada', riegue: 'apagado' },
 };
 
 // Conexiones WebSocket
@@ -77,7 +77,7 @@ io.on('connection', (socket) => {
 
     await guardarEvento({ tipo, valor, timestamp });
 
-    const acciones = procesarMedida(tipo, valor, estado.actuadores);
+    const acciones = procesarMedida(tipo, valor, estado);
     acciones.forEach(({ tipo, valor, mensaje }) => {
       if (tipo === 'alarma') {
         io.emit('alarma', mensaje);

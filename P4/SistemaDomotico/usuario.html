@@ -21,7 +21,9 @@
 
   <div>
     <strong>Temperatura:</strong> <span id="tempValor">--</span> °C<br>
-    <strong>Luminosidad:</strong> <span id="luzValor">--</span>
+    <strong>Luminosidad:</strong> <span id="luzValor">--</span><br>
+    <strong>Humedad:</strong> <span id="humedadValor">--</span>%<br>
+    <strong>Lluvia:</strong> <span id="lluviaValor">--</span><br>
   </div>
 
   <h3>Actuadores</h3>
@@ -33,7 +35,13 @@
     <img id="aireIcono" src="img/aire_apagado.png" alt="Icono Aire A/C" width="100"><br><br>
 
     <strong>Calefacción:</strong> <span id="calorEstado">--</span><br>
-    <img id="calorIcono" src="img/calor_apagado.png" alt="Icono Calefacción" width="100">
+    <img id="calorIcono" src="img/calor_apagado.png" alt="Icono Calefacción" width="100"><br><br>
+
+    <strong>Ventana:</strong> <span id="ventanaEstado">--</span><br>
+    <img id="ventanaIcono" src="img/ventana_cerrada.png" alt="Icono Ventana" width="100"><br><br>
+
+    <strong>Riegue:</strong> <span id="riegueEstado">--</span><br>
+    <img id="riegueIcono" src="img/riegue_apagado.png" alt="Icono Riegue" width="100">
   </div>
 
 
@@ -42,8 +50,12 @@
   <button onclick="controlar('persiana', 'cerrada')">Cerrar persiana</button><br><br>
   <button onclick="controlar('aire', 'encendido')">Encender A/C</button>
   <button onclick="controlar('aire', 'apagado')">Apagar A/C</button><br><br>
-  <button onclick="controlar('calor', 'encendida')">Encender Calefacción</button>
-  <button onclick="controlar('calor', 'apagada')">Apagar Calefacción</button>
+  <button onclick="controlar('calor', 'encendida')">Encender calefacción</button>
+  <button onclick="controlar('calor', 'apagada')">Apagar calefacción</button><br><br>
+  <button onclick="controlar('ventana', 'abierta')">Abrir ventana</button>
+  <button onclick="controlar('ventana', 'cerrada')">Cerrar ventana</button><br><br>
+  <button onclick="controlar('riegue', 'encendido')">Encender riegue</button>
+  <button onclick="controlar('riegue', 'apagado')">Apagar riegue</button>
 
   <h3>Notificaciones</h3>
   <div id="notificaciones"></div>

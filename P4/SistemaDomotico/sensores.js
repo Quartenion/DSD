@@ -8,6 +8,8 @@ form.addEventListener('submit', (e) => {
   // Obtener y convertir los valores introducidos por el usuario
   const temperatura = parseFloat(document.getElementById('temperatura').value);
   const luminosidad = parseFloat(document.getElementById('luminosidad').value);
+  const humedad = parseFloat(document.getElementById('humedad').value);
+  const lluvia = document.getElementById('lluvia').checked; 
 
   // Enviar temperatura si es válida
   if (!isNaN(temperatura)) {
@@ -18,6 +20,13 @@ form.addEventListener('submit', (e) => {
   if (!isNaN(luminosidad)) {
     socket.emit('nueva-medida', { tipo: 'luminosidad', valor: luminosidad });
   }
+
+  // Enviar humedad si es válida
+  if (!isNaN(humedad)) {
+    socket.emit('nueva-medida', { tipo: 'humedad', valor: humedad });
+  }
+
+  socket.emit('nueva-medida', { tipo: 'lluvia', valor: lluvia });
 
   // Limpiar los campos del formulario
   form.reset();

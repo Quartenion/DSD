@@ -11,6 +11,11 @@ socket.on('actualizar-sensores', ({ tipo, valor }) => {
     document.getElementById('tempValor').textContent = valor;
   } else if (tipo === 'luminosidad') {
     document.getElementById('luzValor').textContent = valor;
+  } else if (tipo === 'humedad') {
+    document.getElementById('humedadValor').textContent = valor;
+  }
+  else if (tipo === 'lluvia') {
+    document.getElementById('lluviaValor').textContent = valor ? 'Sí' : 'No';
   }
 });
 
@@ -20,6 +25,8 @@ socket.on('actualizar-actuadores', (estado) => {
   document.getElementById('persianaEstado').textContent = estado.persiana;
   document.getElementById('aireEstado').textContent = estado.aire;
   document.getElementById('calorEstado').textContent = estado.calor;
+  document.getElementById('ventanaEstado').textContent = estado.ventana;
+  document.getElementById('riegueEstado').textContent = estado.riegue;
 
   // Actualiza icono de la persiana
   const persianaIcono = document.getElementById('persianaIcono');
@@ -44,6 +51,22 @@ socket.on('actualizar-actuadores', (estado) => {
   } else {
     calorIcono.src = 'img/calor_apagado.png';
   }
+
+  // Actualiza icono de la ventana
+  const ventanaIcono = document.getElementById('ventanaIcono');
+  if (estado.ventana === 'abierta') {
+    ventanaIcono.src = 'img/ventana_abierta.png';
+  } else {
+    ventanaIcono.src = 'img/ventana_cerrada.png';
+  }
+
+  // Actualiza icono del riegue
+  const riegueIcono = document.getElementById('riegueIcono');
+  if (estado.riegue === 'encendido') {
+    riegueIcono.src = 'img/riegue_encendido.png';
+  } else {
+    riegueIcono.src = 'img/riegue_apagado.png';
+  }
 });
 
 // Recibe y muestra mensajes de alerta generados por el agente inteligente
@@ -58,12 +81,12 @@ socket.on('alarma', (mensaje) => {
   // Espera 3 segundos antes de empezar a desvanecer el mensaje
   setTimeout(() => {
     alerta.classList.add('fade-out');
-  }, 3000);
+  }, 9000);
 
   // Espera 2 segundos más (5 segundos en total) y lo elimina del DOM
   setTimeout(() => {
     zona.removeChild(alerta);
-  }, 5000);
+  }, 10000);
 });
 
 // Al conectarse, se recibe el estado inicial del sistema
@@ -73,6 +96,8 @@ socket.on('estado-inicial', (estado) => {
   document.getElementById('persianaEstado').textContent = estado.actuadores.persiana;
   document.getElementById('aireEstado').textContent = estado.actuadores.aire;
   document.getElementById('calorEstado').textContent = estado.actuadores.calor;
+  document.getElementById('ventanaEstado').textContent = estado.actuadores.ventana;
+  document.getElementById('riegueEstado').textContent = estado.actuadores.riegue;
 });
 
 // Recibe y muestra el historial de eventos del sistema

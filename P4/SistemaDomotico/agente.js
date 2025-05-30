@@ -145,29 +145,29 @@ export function procesarMedida(tipo, valor, estado) {
           valor: { dispositivo: 'riegue', estado: 'apagado' }
         });
       }
-    } else {
-      if (!valor && actuadores.ventana !== 'abierta' && actuadores.aire !== 'encendido' && actuadores.calor !== 'encendida') {
-        acciones.push({
-          tipo: 'alarma',
-          mensaje: '¡No está lloviendo! Abriendo ventana automáticamente.'
-        });
-        acciones.push({
-          tipo: 'actuador',
-          valor: { dispositivo: 'ventana', estado: 'abierta' }
-        });
-      }
-
-      if (!valor && actuadores.riegue !== 'encendido' && estado.sensores.humedad < UMBRALES.humedad.min) {
-        acciones.push({
-          tipo: 'alarma',
-          mensaje: '¡No está lloviendo! Encendiendo riego automáticamente.'
-        });
-        acciones.push({
-          tipo: 'actuador',
-          valor: { dispositivo: 'riegue', estado: 'encendido' }
-        });
-      }
     } 
+
+    if (!valor && actuadores.ventana !== 'abierta' && actuadores.aire !== 'encendido' && actuadores.calor !== 'encendida') {
+      acciones.push({
+        tipo: 'alarma',
+        mensaje: '¡No está lloviendo! Abriendo ventana automáticamente.'
+      });
+      acciones.push({
+        tipo: 'actuador',
+        valor: { dispositivo: 'ventana', estado: 'abierta' }
+      });
+    }
+
+    if (!valor && actuadores.riegue !== 'encendido' && estado.sensores.humedad < UMBRALES.humedad.min) {
+      acciones.push({
+        tipo: 'alarma',
+        mensaje: '¡No está lloviendo! Encendiendo riego automáticamente.'
+      });
+      acciones.push({
+        tipo: 'actuador',
+        valor: { dispositivo: 'riegue', estado: 'encendido' }
+      });
+    }
   }
 
   return acciones;

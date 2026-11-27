@@ -1,21 +1,24 @@
 # DSD · Desarrollo de Sistemas Distribuidos
 
-Prácticas de **Desarrollo de Sistemas Distribuidos** (Grado en Ingeniería Informática, Universidad de Granada). Cada práctica resuelve un problema cliente-servidor con una tecnología distinta de comunicación entre procesos.
+Prácticas de la asignatura Desarrollo de Sistemas Distribuidos del Grado en Ingeniería Informática de la Universidad de Granada.
 
-| Carpeta | Tecnología | Qué hace |
-|---|---|---|
-| `P2/RPC/` | Sun RPC (C) | Calculadora remota: el cliente envía operaciones y el servidor las resuelve. |
-| `P2/APACHE_THRIFT/` | Apache Thrift (Python) | Calculadora remota más completa (operaciones básicas, factorial, MCD/MCM, vectores, expresiones). El servidor delega parte del trabajo en un segundo servidor. |
-| `P3/` | Java RMI | `EJERCICIO/` es un **sistema de donaciones replicado**: dos servidores (principal y réplica) reparten a los clientes registrados y llevan el total donado. `Ejemplo1`…`Ejemplo3` son los ejemplos guiados. |
-| `P4/SistemaDomotico/` | Node.js, Socket.IO, MongoDB | **Sistema domótico**: una página simula sensores, otra es el panel del usuario y un agente activa actuadores (aire, calefacción, persianas, riego, ventanas) cuando las medidas superan los umbrales. Guarda el historial en MongoDB. |
-| `P4/ejercicios/` | Node.js | Ejercicios previos: calculadora web, conexiones con Socket.IO y prueba de MongoDB. |
-| `codigo-ejemplos/` | RPC y Thrift | Ejemplos de clase (mensajes remotos, listado de directorios, calculadora). |
+La idea de la asignatura es resolver el mismo tipo de problema, un cliente que le pide algo a un servidor, con una tecnología distinta en cada práctica. Por eso hay dos calculadoras remotas, una con Sun RPC en C y otra con Apache Thrift en Python, después un sistema de donaciones con Java RMI y, por último, un sistema domótico en tiempo real con Node.js y Socket.IO.
 
-Cada práctica tiene su enunciado o memoria en PDF dentro de su carpeta.
+## Las prácticas
+
+**P2 · Calculadora con Sun RPC (C).** El cliente manda la operación y los números al servidor, que la resuelve y le devuelve el resultado. La interfaz se define en `calculadora.x` y `rpcgen` genera a partir de ella el código que se encarga de la comunicación.
+
+**P2 · Calculadora con Apache Thrift (Python).** Es la misma idea, pero más completa: además de las operaciones básicas tiene factorial, MCD y MCM, operaciones con vectores y evaluación de expresiones. El servidor principal no lo hace todo él solo, sino que le pasa parte del trabajo a un segundo servidor, así que también hace de cliente.
+
+**P3 · Sistema de donaciones con Java RMI.** Hay dos servidores, el principal y una réplica, que se reparten a los clientes registrados. Un cliente se registra en uno de los dos, inicia sesión y dona, y los servidores se comunican entre ellos para saber dónde está registrado cada cliente y cuánto se ha donado en total. Las carpetas `Ejemplo1` a `Ejemplo3` son los ejemplos guiados que se hicieron antes del ejercicio.
+
+**P4 · Sistema domótico (Node.js, Socket.IO y MongoDB).** Una página simula los sensores de una casa (temperatura, luminosidad, humedad y lluvia) y envía las medidas al servidor, que las reparte en tiempo real a todos los clientes conectados. Un agente revisa cada medida y, si se sale de los umbrales, lanza una alarma y activa los actuadores que hagan falta. Por ejemplo, si entra demasiada luz cierra la persiana, si hace frío enciende la calefacción y cierra la ventana si está abierta, y si llueve cierra la ventana y apaga el riego. Desde la página del usuario se ve el estado de todo y se pueden controlar los actuadores a mano, y el historial de eventos se guarda en MongoDB.
+
+Cada práctica tiene su enunciado o su memoria en PDF dentro de su carpeta.
 
 ## Cómo ejecutarlo
 
-Todo está pensado para Linux.
+**Requisitos:** Linux. Para cada práctica, además, lo que se indica en su apartado.
 
 ### P2 · Calculadora con Sun RPC
 
@@ -47,9 +50,7 @@ java -Djava.security.policy=server.policy ServidorReplica &   # registro RMI en 
 java -Djava.security.policy=server.policy Cliente
 ```
 
-El cliente es interactivo: pide los datos por teclado para registrarse, iniciar sesión y donar.
-
-Para los ejemplos guiados basta con `sh ejecutar.sh` dentro de `P3/Ejemplo1`.
+El cliente es interactivo, así que te va pidiendo por teclado lo que quieres hacer. Para los ejemplos guiados basta con ejecutar `sh ejecutar.sh` dentro de `P3/Ejemplo1`.
 
 ### P4 · Sistema domótico
 
@@ -62,5 +63,17 @@ node servidor.js
 ```
 
 Después abre en el navegador:
-- <http://localhost:8080/sensores> para enviar medidas de los sensores.
-- <http://localhost:8080/usuario> para ver el estado, las alarmas y controlar los actuadores.
+- http://localhost:8080/sensores para enviar las medidas de los sensores
+- http://localhost:8080/usuario para ver el estado y las alarmas, y controlar los actuadores
+
+## Estructura
+
+```
+P2/RPC/               <- calculadora con Sun RPC
+P2/APACHE_THRIFT/     <- calculadora con Apache Thrift
+P3/EJERCICIO/         <- sistema de donaciones con Java RMI
+P3/Ejemplo1..3/       <- ejemplos guiados de RMI
+P4/SistemaDomotico/   <- sistema domótico
+P4/ejercicios/        <- ejercicios previos con Node.js, Socket.IO y MongoDB
+codigo-ejemplos/      <- ejemplos de clase de RPC y Thrift
+```
